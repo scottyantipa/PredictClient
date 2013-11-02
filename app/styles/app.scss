@@ -1,16 +1,15 @@
-// Test code
-nav {
-  ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
+$banner-color: rgb(70,70,70);
+$banner-height: 40px;
 
-  li { display: inline-block; }
-
-  a {
-    display: block;
-    padding: 6px 12px;
-    text-decoration: none;
+.banner {
+  background-color: $banner-color;
+  height: $banner-height;
+  width: 100%;
+  div.title {
+    color: white;
+    height: $banner-height;
+    line-height: $banner-height;
+    float: left;
+    padding-left: 5px;
   }
 }

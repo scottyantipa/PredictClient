@@ -1,5 +1,4 @@
-App = require 'app'
+AppView = require 'views/appView'
 $ ->
 	# initialize the primary App object
-	console.log 'Within init'
-	app = new App
+	app = new AppView
