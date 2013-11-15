@@ -1,8 +1,8 @@
 ###
-Top level app object
+Top level app view
 ###
 module.exports = class AppView extends Backbone.View
-	template: require './templates/app'
+	template: require './templates/appView'
 	appTitle: "Predict"
 	
 	initialize: ({@el}) ->
