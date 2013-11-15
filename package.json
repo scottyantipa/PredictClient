@@ -16,8 +16,9 @@
     "coffee-script-brunch": "~1.7.2",
     "sass-brunch": "~1.7.0",
     "handlebars-brunch": "~1.7.0",
+    "jade-brunch": "latest",
     "express": "3.x",
     "mongodb": "1.x",
-    "mongojs": "0.9.x"
+    "mongoose": "3.8.x"
   }
 }

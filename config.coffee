@@ -15,7 +15,7 @@ exports.config =
       joinTo: 'javascripts/app.js'
 
   server: 
-    path: 'app.coffee'
+    path: 'appServer.coffee'
     port: 3333
     base: '/'
     run: yes
