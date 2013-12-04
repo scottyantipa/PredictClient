@@ -1,6 +1,11 @@
 ###
 Top level app view
 ###
+
+ChromeView = require './chromeView'
+Widget = require '../canvas/widget/widget'
+WidgetModel = require '../canvas/widget/widgetModel'
+
 module.exports = class AppView extends Backbone.View
 	template: require './templates/appView'
 	appTitle: "Predict"
@@ -14,10 +19,14 @@ module.exports = class AppView extends Backbone.View
 		# setup chrome
 		chromeModel = new Backbone.Model
 		chromeModel.set 'title', @appTitle
-		ChromeView = require('./chromeView')
 		chromeView = new ChromeView
 			el: $('.chrome')
 			model: chromeModel
 
+		# setup widget
+		widgetModel = new WidgetModel
+		widget = new Widget
+			model: widgetModel
+			
 	render: ->
 		@el.append @template
