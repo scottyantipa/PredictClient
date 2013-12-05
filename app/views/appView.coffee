@@ -1,32 +1,35 @@
 ###
 Top level app view
 ###
-
+DataManager = require '../data/dataManager'
 ChromeView = require './chromeView'
-Widget = require '../canvas/widget/widget'
+ChartWidget = require '../canvas/widget/subclass/chartWidget'
 WidgetModel = require '../canvas/widget/widgetModel'
+template = require './templates/appView'
 
 module.exports = class AppView extends Backbone.View
-	template: require './templates/appView'
+	template: template
 	appTitle: "Predict"
 	
 	initialize: ({@el}) ->
 		@render()
 
-		DataManager = require '../data/dataManager'
-		@dataManager = new DataManager
-
-		# setup chrome
 		chromeModel = new Backbone.Model
 		chromeModel.set 'title', @appTitle
-		chromeView = new ChromeView
+		@chromeView = new ChromeView
 			el: $('.chrome')
 			model: chromeModel
 
-		# setup widget
-		widgetModel = new WidgetModel
-		widget = new Widget
-			model: widgetModel
-			
+		@chartWidget = new ChartWidget
+			model: new WidgetModel
+			$element: @$('.visualization.container')
+		
+		@dataManager = new DataManager
+		@dataManager.fetchAll => @onDataChange()
+
 	render: ->
 		@el.append @template
+
+	# delegate to chart widget
+	onDataChange: ->
+		@chartWidget.onDataChange @dataManager.state
