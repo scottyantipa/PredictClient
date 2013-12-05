@@ -19,11 +19,9 @@ module.exports = class DataManager
 
 		@state.results = 
 			for i in [1..numEvents]	
-				title: "Obama will be impeached"
-				author: "Jon Doe"
 				date: new Date minDate.getTime() + (epochDelta * Math.random())
 				probability: Math.random()
-				hot: Math.random()
+				title: "Some event name here"
 
 	# just for resting
 	fetchAll: (callBack) ->

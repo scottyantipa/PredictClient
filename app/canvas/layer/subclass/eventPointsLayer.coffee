@@ -1,6 +1,6 @@
 Layer = require '../layer'
 
-module.exports = class EventCirclesLayer extends Layer
+module.exports = class EventPointsLayer extends Layer
 
 	constructor: ({@$canvas, @model}) ->
 		super

@@ -20,11 +20,13 @@ module.exports = class AppView extends Backbone.View
 			el: $('.chrome')
 			model: chromeModel
 
+		@dataManager = new DataManager
+
 		@chartWidget = new ChartWidget
 			model: new WidgetModel
 			$element: @$('.visualization.container')
+			delegate: @
 		
-		@dataManager = new DataManager
 		@dataManager.fetchAll => @onDataChange()
 
 	render: ->
@@ -32,4 +34,11 @@ module.exports = class AppView extends Backbone.View
 
 	# delegate to chart widget
 	onDataChange: ->
-		@chartWidget.onDataChange @dataManager.state
+		@chartWidget.onDataChange
+
+###
+Delegate methods
+###
+
+	state: ->
+		@dataManager.state
