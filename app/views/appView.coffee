@@ -10,7 +10,7 @@ template = require './templates/appView'
 module.exports = class AppView extends Backbone.View
 	template: template
 	appTitle: "Predict"
-	
+
 	initialize: ({@el}) ->
 		@render()
 
@@ -23,22 +23,23 @@ module.exports = class AppView extends Backbone.View
 		@dataManager = new DataManager
 
 		@chartWidget = new ChartWidget
-			model: new WidgetModel
 			$element: @$('.visualization.container')
 			delegate: @
+			model: new WidgetModel
+				h: 500
+				w: 1000
 		
-		@dataManager.fetchAll => @onDataChange()
+		@dataManager.fetchAll => 
+			@onDataChange()
 
 	render: ->
 		@el.append @template
 
-	# delegate to chart widget
 	onDataChange: ->
-		@chartWidget.onDataChange
+		@chartWidget.onDataChange()
 
-###
-Delegate methods
-###
-
+	###
+	Delegate methods
+	###
 	state: ->
 		@dataManager.state

@@ -33,7 +33,7 @@ db.once 'open', () ->
 			title: "Obama will be impeached"
 			author: "Jon Doe"
 			date: new Date minDate.getTime() + (epochDelta * Math.random())
-			probability: Math.random()
+			probability: Math.random() * 100 # 0 through 100
 			hot: Math.random()
 
 		prediction.save (err, somePrediction) ->

@@ -4,7 +4,6 @@ module.exports = class Point extends Shape
 	
 	constructor: ({@model}) ->
 		super
-		console.log 'creating a point!'
 
 	draw: (ctx) ->
 		{r, x, y, fill, stroke} = @model
@@ -13,4 +12,4 @@ module.exports = class Point extends Shape
 		ctx.arc Math.round(x), Math.round(y), r, 0, Math.PI * 2, true
 		ctx.closePath()
 		ctx.fill() if fill
-		ctx.stroke() if stroke
+		# ctx.stroke() if stroke

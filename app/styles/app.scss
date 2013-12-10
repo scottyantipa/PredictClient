@@ -1,4 +1,4 @@
-// mixins
+  // mixins
 @mixin match-parent {
   position: absolute;
   bottom: 0px;
@@ -31,12 +31,4 @@ $banner-height: 40px;
 }
 
 .visualization.container {
-  @include match-parent;
-  background-color: red;
-  margin-top: $banner-height;
-}
-
-canvas { // right now every canvas will act like this (a layer)
-  height: 100%;   width: 100%;
-  background-color: blue;
 }
