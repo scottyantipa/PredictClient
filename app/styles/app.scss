@@ -28,6 +28,16 @@ $banner-height: 40px;
     float: left;
     padding-left: 5px;
   }
+  .options {
+    float: right;
+    height: $banner-height;
+    span {
+      float: right;
+      line-height: $banner-height;
+      color: white;
+      padding: 0px 10px 0px 10px;
+    }
+  }
 }
 
 canvas {

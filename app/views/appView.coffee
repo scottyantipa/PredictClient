@@ -19,6 +19,7 @@ module.exports = class AppView extends Backbone.View
 		@chromeView = new ChromeView
 			el: $('.chrome')
 			model: chromeModel
+		@chromeView.delegate = @
 
 		@dataManager = new DataManager
 
@@ -45,6 +46,18 @@ module.exports = class AppView extends Backbone.View
 	###
 	state: ->
 		@dataManager.state
+
+	onClickAdd: (e) ->
+		@dataManager.addNewFakeData()
+		@onDataChange()
+
+	onClickRemove: (e) ->
+		@dataManager.removeTopHalf()
+		@onDataChange()
+
+	onClickUpdate: (e) ->
+		@dataManager.updateBottomHalf()
+		@onDataChange()
 
 	sizeForChart: ->
 		w: $('body').width()

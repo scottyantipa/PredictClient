@@ -21,6 +21,7 @@ module.exports = class TickLabelsGroup extends Group
 				text: "#{value}%"
 				y: y + 4
 				x: bounds.left - 40
+				key: value
 
 	insertShapeWithModel: (model) ->
 		@shapes.push new Text

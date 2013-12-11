@@ -7,34 +7,59 @@ module.exports = class DataManager
 		results: []
 		query: {}
 	
-	constructor: () ->
-		@createFakeData true
-	
+	constructor: ->
+		@state.results = @createFakeData()
+
 	# Create fake predictions from random data
-	createFakeData: (random = false) ->
+	createFakeData: (random = true, numEvents = 20, startKey = 0) ->
+		for i in [1..numEvents]
+			if random
+				date: @dateForPrediction(true, numEvents)
+				probability: Math.random() * 100
+				hot: Math.random() * 100
+				key: i + startKey
+
+			else
+				date: @dateForPrediction(false, numEvents, i)
+				probability: probabilityStep * i
+				hot: probabilityStep * i
+				key: i + startKey
+
+	dateForPrediction: (random = true, numEvents, i) ->
 		minDate = new Date 2013, 1, 1
-		maxDate = new Date 2020, 1, 1
-		numEvents = 20
+		maxDate = new Date 2030, 1, 1
 		epochDelta = maxDate.getTime() - minDate.getTime()
 		epochStep = epochDelta / numEvents
 		probabilityStep = 100 / numEvents
-		title = "Some event name here"
+		if random
+			epoch = minDate.getTime() + (epochDelta * Math.random())
+			adjustment = Math.random() * epochDelta
+			if Math.random() < .5
+				epoch += adjustment
+			else
+				epoch -= adjustment
+			new Date epoch
+		else
+			new Date minDate.getTime() + (numEvents - i) * epochStep
 
-		@state.results = 
-			for i in [1..numEvents]
-				if random
-					date: new Date minDate.getTime() + (epochDelta * Math.random())
-					probability: Math.random() * 100
-					hot: Math.random() * 100
-					title: title
-					key: i
+	addNewFakeData: ->
+		numExistingEvents = @state.results.length
+		newEvents = @createFakeData true, 20, numExistingEvents
+		@state.results = @state.results.concat newEvents
 
-				else
-					date: new Date minDate.getTime() + (numEvents - i) * epochStep
-					probability: probabilityStep * i
-					hot: probabilityStep * i
-					title: title
-					key: i
+	removeTopHalf: ->
+		@state.results = _.filter @state.results, (result) ->
+			result.probability < 50
+		console.log 'end of removeTopHalf'
+
+	updateBottomHalf: ->
+		results = @state.results
+		for result in results
+			continue if result.probability > 50
+			result.probability = 100 * Math.random()
+			result.hot = 100 * Math.random()
+		@state.results = results
+		console.log 'results after: ', @state.results
 
 	# just for resting
 	fetchAll: (callBack) ->

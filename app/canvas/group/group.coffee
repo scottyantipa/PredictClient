@@ -33,7 +33,8 @@ module.exports = class Group
 	updateShapes: (newShapeModels) ->
 		[insert, remove, update] = [ [], [], [] ]
 		oldShapesByKey = {}
-		oldShapesByKey[oldValue.model.key] = oldShape for oldShape in @shapes
+		for oldShape in @shapes
+			oldShapesByKey[oldShape.model.key] = oldShape 
 
 		for newModel in newShapeModels
 			key = newModel.key
@@ -44,7 +45,8 @@ module.exports = class Group
 			delete oldShapesByKey[key]
 
 		# Remove any remaining old shapes (not pushed to update)
-		remove.push oldShapesByKey[key] for key of oldShapesByKey
+		for key of oldShapesByKey
+			remove.push oldShapesByKey[key] 
 		
 		for newModel in update
 			@updateShapeForNewModel newModel
@@ -58,7 +60,8 @@ module.exports = class Group
 	updateShapeForNewModel: (model) ->
 		key = model.key
 		oldShape = _.filter @shapes, (shape) ->
-			shape.model.key
+			shape.model.key is key
+		oldShape = oldShape[0]
 		oldShape.model = model
 
 	# override with a specific shape
