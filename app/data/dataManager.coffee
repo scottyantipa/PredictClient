@@ -25,12 +25,14 @@ module.exports = class DataManager
 				if random
 					date: new Date minDate.getTime() + (epochDelta * Math.random())
 					probability: Math.random() * 100
+					hot: Math.random() * 100
 					title: title
 					key: i
 
 				else
 					date: new Date minDate.getTime() + (numEvents - i) * epochStep
 					probability: probabilityStep * i
+					hot: probabilityStep * i
 					title: title
 					key: i
 

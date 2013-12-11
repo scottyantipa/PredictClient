@@ -1,9 +1,6 @@
 Shape = require '../shape'
 
 module.exports = class Point extends Shape
-	
-	constructor: ({@model}) ->
-		super
 
 	draw: (ctx) ->
 		{r, x, y, fill, stroke} = @model

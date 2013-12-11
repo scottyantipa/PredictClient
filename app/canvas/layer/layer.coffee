@@ -7,14 +7,13 @@ module.exports = class Layer
 	constructor: ({@$canvas, @model}) ->
 		@ctx = @$canvas[0].getContext("2d")
 		@pixelRatio = window.devicePixelRatio or 1
-		console.log '@pixelRatio: ', @pixelRatio
 		@$canvas.width = @pixelRatio * @model.w
 		@$canvas.height = @pixelRatio * @model.h
-		return
 
 	updateModel: ->
 		@setCanvasSize()
-		group.updateModel() for group in @groups
+		for group in @groups
+			group.updateModel()
 
 	setCanvasSize: ->
 		{w, h} = @model
@@ -27,8 +26,9 @@ module.exports = class Layer
 		{w, h} = @model
 		@ctx.clearRect 0, 0, w, h
 		for group in @groups
+			{tx, ty} = group.model
 			@ctx.save()
-			if group.tx or group.ty
-				@ctx.translate(group.tx, group.ty)
+			if tx or ty
+				@ctx.translate(tx, ty)
 			group.draw(@ctx) 
 			@ctx.restore()

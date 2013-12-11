@@ -1,10 +1,12 @@
 module.exports = class Widget
-	layers: []
+	layers: null
 	model: null # a WidgetModel
 	delegate: null # usually the main app
 
 	# Call super in subclass
 	constructor: ({@model, @$element, @delegate}) ->
+		@layers = []
+
 		{h, w} = @model
 		@$element.css 'width', w
 		@$element.css 'height', h
@@ -15,7 +17,8 @@ module.exports = class Widget
 
 	# the rest should be done in subclass
 	updateModel: ->
-		layer.updateModel() for layer in @layers
+		for layer in @layers
+			layer.updateModel()
 		@draw()
 
 	draw: ->
@@ -26,5 +29,5 @@ module.exports = class Widget
 		return
 
 	onMouseMove: (e) ->
-		return
+		return 
 	
