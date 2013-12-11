@@ -11,13 +11,14 @@ module.exports = class EventPointsLayer extends Layer
 
 		@groups = [@eventsGroup]
 
-	###
-	Will get the following modified by parent: 
-		events, timeScale, probabilityScale
-	Will modify the following in it's children:
-		eventsGroup:  events, timeScale, probabilityScale
-	###
 	updateModel: ->
-		{events, timeScale, probabilityScale, w, h} = @model
-		$.extend @eventsGroup.model, {events, timeScale, probabilityScale, w, h}
+		{events, timeScale, probabilityScale, hotScale, w, h, pad, plotHeight, plotWidth} = @model
+		{top, left} = pad
+		w = plotWidth
+		h = plotHeight
+		tx = left
+		ty = top
+		
+		$.extend @eventsGroup.model, {events, timeScale, probabilityScale, hotScale, w, h, tx, ty}
+		
 		super

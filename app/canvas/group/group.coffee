@@ -1,11 +1,12 @@
 Layer = require '../layer/layer'
 
 module.exports = class Group
-	layer: null # a Layer
 	model: null # GroupModel
-	shapes: [] # Shape array
+	shapes: null # Shape array
 
 	constructor: ({@layer, @model}) ->
+		@shapes = []
+		@model = {}
 		return
 
 	draw: (ctx) ->

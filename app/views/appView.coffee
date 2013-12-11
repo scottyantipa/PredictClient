@@ -22,12 +22,14 @@ module.exports = class AppView extends Backbone.View
 
 		@dataManager = new DataManager
 
+		$chartContainer = @$('.visualization.container')
+		{w, h} = @sizeForChart()
 		@chartWidget = new ChartWidget
-			$element: @$('.visualization.container')
+			$element: $chartContainer
 			delegate: @
 			model: new WidgetModel
-				h: 500
-				w: 1000
+				w: w
+				h: h
 		
 		@dataManager.fetchAll => 
 			@onDataChange()
@@ -43,3 +45,7 @@ module.exports = class AppView extends Backbone.View
 	###
 	state: ->
 		@dataManager.state
+
+	sizeForChart: ->
+		w: $('body').width()
+		h: $('.app').height() - $('.chrome').height()

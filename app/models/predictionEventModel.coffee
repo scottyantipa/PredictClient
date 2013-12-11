@@ -9,6 +9,7 @@ module.exports = class PredictionEventModel
 		'probability', # scale 0 to 1
 		'title' # string
 		'key' # string
+		'hot' # scale 0 to 1
 	]
 	
 	# init all the values with the config, or null them
