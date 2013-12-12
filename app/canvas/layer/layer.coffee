@@ -1,5 +1,5 @@
 module.exports = class Layer
-	groups: []
+	groups: null
 	model: null # LayerModel
 	ctx: null # a canvas context
 	pixelRatio: 1 # for canvas element 
@@ -9,6 +9,7 @@ module.exports = class Layer
 		@pixelRatio = window.devicePixelRatio or 1
 		@$canvas.width = @pixelRatio * @model.w
 		@$canvas.height = @pixelRatio * @model.h
+		if not groups then groups = [] # safety net
 
 	updateModel: ->
 		@setCanvasSize()

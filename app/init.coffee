@@ -1,4 +1,4 @@
 AppView = require 'views/appView'
 $ ->
-	app = new AppView
+	window.app = new AppView
 		el: $('body')

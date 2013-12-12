@@ -8,7 +8,6 @@ module.exports = class ProbabilityTicksLayer extends Layer
 	steps: [5, 10, 20, 25, 50] # factors of 100
 
 	constructor: ({@$canvas, @model}) ->
-		super
 		@ticksGroup = new TicksGroup
 			model: new GroupModel
 
@@ -16,6 +15,7 @@ module.exports = class ProbabilityTicksLayer extends Layer
 			model: new GroupModel
 
 		@groups = [@ticksGroup, @labelsGroup]
+		super
 
 	updateModel: ->
 		{probabilityScale, timeScale, pad, plotHeight, plotWidth} = @model
