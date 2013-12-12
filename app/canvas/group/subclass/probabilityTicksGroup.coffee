@@ -10,6 +10,7 @@ module.exports = class ProbabilityTicksGroup extends Group
 	updateModel: ->
 		newShapeModels = @createNewShapes()
 		@updateShapes newShapeModels
+		super
 
 	createNewShapes: ->
 		{bounds, waterMarks} = @model
