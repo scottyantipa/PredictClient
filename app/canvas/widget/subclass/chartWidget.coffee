@@ -7,8 +7,6 @@ LinearScale = require '../../../util/linearScale'
 
 module.exports = class ChartWidget extends Widget
 	constructor: ({@model, @$element, @delegate}) ->
-		super
-
 		probabilityTicksCanvas = $('<canvas class="probability-ticks"></canvas>')
 		@$element.append probabilityTicksCanvas
 		@probabilityTicksLayer = new ProbabilityTicksLayer
@@ -27,6 +25,7 @@ module.exports = class ChartWidget extends Widget
 				h: @model.h
 
 		@layers = [@probabilityTicksLayer, @eventPointsLayer]
+		super
 
 	# Called by appView when dataManager gets data back
 	# Get results and structure model with: events, scales
@@ -79,7 +78,7 @@ module.exports = class ChartWidget extends Widget
 
 		@model.hotScale = new LinearScale
 			domain: [0, 100]
-			range: [5, 15] # min, max radius
+			range: [2, 30] # min, max radius
 
 		{events, timeScale, probabilityScale, hotScale, w, h, pad, plotHeight, plotWidth} = @model
 		$.extend @eventPointsLayer.model, {events, timeScale, probabilityScale, hotScale, w, h, pad, plotHeight, plotWidth}

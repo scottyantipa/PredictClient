@@ -50,7 +50,6 @@ module.exports = class DataManager
 	removeTopHalf: ->
 		@state.results = _.filter @state.results, (result) ->
 			result.probability < 50
-		console.log 'end of removeTopHalf'
 
 	updateBottomHalf: ->
 		results = @state.results
@@ -59,7 +58,6 @@ module.exports = class DataManager
 			result.probability = 100 * Math.random()
 			result.hot = 100 * Math.random()
 		@state.results = results
-		console.log 'results after: ', @state.results
 
 	# just for resting
 	fetchAll: (callBack) ->

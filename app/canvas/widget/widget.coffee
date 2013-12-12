@@ -1,3 +1,4 @@
+Tweener = require '../tween/tweener'
 module.exports = class Widget
 	layers: null
 	model: null # a WidgetModel
@@ -5,8 +6,6 @@ module.exports = class Widget
 
 	# Call super in subclass
 	constructor: ({@model, @$element, @delegate}) ->
-		@layers = []
-
 		{h, w} = @model
 		@$element.css 'width', w
 		@$element.css 'height', h
@@ -15,13 +14,20 @@ module.exports = class Widget
 			.click((e) => @onClick(e))
 			.mousemove((e) => @onMouseMove(e))
 
+		@tweener = new Tweener @draw
+		for layer in @layers
+			layer.tweener = @tweener
+			for group in layer.groups
+				group.tweener = @tweener
+
 	# the rest should be done in subclass
 	updateModel: ->
 		for layer in @layers
 			layer.updateModel()
 		@draw()
 
-	draw: ->
+	# Fat arrow beacuse it gets called from tweener
+	draw: =>
 		for layer in @layers
 			layer.draw()
 

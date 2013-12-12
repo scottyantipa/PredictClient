@@ -5,11 +5,11 @@ GroupModel = require '../../group/groupModel'
 module.exports = class EventPointsLayer extends Layer
 
 	constructor: ({@$canvas, @model}) ->
-		super
 		@eventsGroup = new EventPointsGroup
 			model: new GroupModel
 
 		@groups = [@eventsGroup]
+		super
 
 	updateModel: ->
 		{events, timeScale, probabilityScale, hotScale, w, h, pad, plotHeight, plotWidth} = @model

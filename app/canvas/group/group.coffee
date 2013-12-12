@@ -7,7 +7,6 @@ module.exports = class Group
 	constructor: ({@layer, @model}) ->
 		@shapes = []
 		@model = {}
-		return
 
 	draw: (ctx) ->
 		for shape in @shapes
@@ -16,10 +15,6 @@ module.exports = class Group
 				ctx.translate shape.model.tx, shape.model.ty
 			shape.draw(ctx)
 			ctx.restore()
-
-	translate: ({tx, ty}, animated = false) ->
-		if not animated
-			[model.tx, model.ty] = [tx, ty]
 #
 # Managing shapes
 #
@@ -59,10 +54,24 @@ module.exports = class Group
 
 	updateShapeForNewModel: (model) ->
 		key = model.key
-		oldShape = _.filter @shapes, (shape) ->
+		shape = _.filter @shapes, (shape) ->
 			shape.model.key is key
-		oldShape = oldShape[0]
-		oldShape.model = model
+		shape = shape[0]
+		oldModel = shape.model
+		tweenMap =
+			objToTween: shape.model
+			propsToTween: {}
+
+		needToTween = false
+		for property, endValue of model
+			startValue = oldModel[property]
+			if not startValue
+				oldModel[property] = endValue
+			else if not _.isEqual startValue, endValue
+				needToTween = true
+				tweenMap.propsToTween[property] = [startValue, endValue]
+
+		@tweener.registerObjectToTween(tweenMap) if needToTween
 
 	# override with a specific shape
 	insertShapeWithModel: (model) ->
