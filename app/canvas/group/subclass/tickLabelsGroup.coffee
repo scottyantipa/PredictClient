@@ -19,6 +19,5 @@ module.exports = class TickLabelsGroup extends Group
 				x: bounds.left - 40
 				key: value
 
-	insertShapeWithModel: (model) ->
-		@shapes.push new Text
-			model: model
+	newShapeWithOptions: (options) ->
+		new Text options

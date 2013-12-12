@@ -53,6 +53,9 @@ module.exports = class Tweener
 					objToTween.needsRedraw = true
 
 			# remove the finished tweens
+			for tween in @registeredTweens
+				if tween.Remove then tween.delegate.didFinishTween(tween)
+
 			@registeredTweens = _.filter @registeredTweens, (tween) ->
 				not tween.Remove
 

@@ -1,7 +1,7 @@
 module.exports = class Shape
 	model: null # ShapeModel
 
-	constructor: ({@model}) ->
+	constructor: ({@model, @delegate}) ->
 		return
 
 	draw: (ctx) ->

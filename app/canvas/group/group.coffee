@@ -61,7 +61,9 @@ module.exports = class Group
 			@updateShapeForNewModel newModel
 
 		for newModel in insert
-			@insertShapeWithModel newModel
+			@insertShapeWithOptions 
+				model: newModel
+				delegate: @
 
 		for oldShape in remove
 			@removeShape oldShape
@@ -76,6 +78,8 @@ module.exports = class Group
 		tweenMap =
 			objToTween: shape.model
 			propsToTween: {}
+			delegate: shape.delegate
+			status: "update"
 
 		needToTween = false
 		for property, endValue of model
@@ -90,10 +94,45 @@ module.exports = class Group
 			@tweener.registerObjectToTween(tweenMap)
 
 	# override with a specific shape
-	insertShapeWithModel: (model) ->
+	insertShapeWithOptions: (options) ->
+		shape = @newShapeWithOptions options
+		@shapes.push shape
+		tweenMap = @tweenMapForAddShape shape
+		@tweener.registerObjectToTween(tweenMap) if tweenMap
 		return
 
-	removeShape: (shape) ->
-		key = shape.model.key
-		@shapes = _.filter @shapes, (shape) ->
-			shape.model.key isnt key
+	removeShape: (shape) =>
+		tweenMap = @tweenMapForRemoveShape shape
+		@tweener.registerObjectToTween(tweenMap) if tweenMap
+
+	# should most likely override this
+	tweenMapForRemoveShape: (shape) ->
+		startOpacity = shape.model.opacity # set initial state
+
+		objToTween: shape.model
+		propsToTween:
+			opacity: [startOpacity, 0]
+		delegate: shape.delegate
+		status: 'remove'
+
+	tweenMapForAddShape: (shape) ->
+		startOpacity = 0
+
+		objToTween: shape.model
+		propsToTween:
+			opacity: [startOpacity, shape.model.opacity]
+		delegate: shape.delegate
+		status: 'add'
+
+
+	# Delegate methods
+	didFinishTween: (tween) =>
+		switch tween.status
+			when 'remove'
+				key = tween.objToTween.key
+				@shapes = _.filter @shapes, (shape) ->
+					shape.model.key isnt key
+			when 'update'
+				break
+			when 'add'
+				break
