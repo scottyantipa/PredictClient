@@ -21,6 +21,5 @@ module.exports = class ProbabilityTicksGroup extends Group
 				y1: y
 				key: value
 
-	insertShapeWithModel: (model) ->
-		@shapes.push new Line
-			model: model
+	newShapeWithOptions: (options) ->
+		new Line options

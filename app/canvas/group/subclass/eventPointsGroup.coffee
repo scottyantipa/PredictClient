@@ -22,6 +22,5 @@ module.exports = class EventPointsGroup extends Group
 			r: r
 			key: key
 
-	insertShapeWithModel: (model) ->
-		@shapes.push new Point
-			model: model
+	newShapeWithOptions: (options) ->
+		new Point options
