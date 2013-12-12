@@ -19,6 +19,6 @@ module.exports = class EventPointsLayer extends Layer
 		tx = left
 		ty = top
 		
-		$.extend @eventsGroup.model, {events, timeScale, probabilityScale, hotScale, w, h, tx, ty}
-		
+		@extendChildModel @eventsGroup, {events, timeScale, probabilityScale, hotScale, w, h, tx, ty}
+
 		super

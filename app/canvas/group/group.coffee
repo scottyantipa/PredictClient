@@ -3,6 +3,7 @@ Layer = require '../layer/layer'
 module.exports = class Group
 	model: null # GroupModel
 	shapes: null # Shape array
+	needsRedraw: false
 
 	constructor: ({@layer, @model}) ->
 		@shapes = []
@@ -15,6 +16,8 @@ module.exports = class Group
 				ctx.translate shape.model.tx, shape.model.ty
 			shape.draw(ctx)
 			ctx.restore()
+		@needsRedraw = false
+
 #
 # Managing shapes
 #
@@ -23,9 +26,20 @@ module.exports = class Group
 	updateModel: ->
 		return
 
+	# Needing redraw can be determined in two ways.
+	# Either this group removes/adds shapes itelf, or
+	# an external object changes a shape model directly
+	doesNeedRedraw: ->
+		if @needsRedraw then return true
+		for shape in @shapes
+			if shape.model.needsRedraw
+				return true
+		false
+
 	# Given a hash of the newly calculated shapes
 	# we need to remove/add/update existing shapes
 	updateShapes: (newShapeModels) ->
+		@needsRedraw = true
 		[insert, remove, update] = [ [], [], [] ]
 		oldShapesByKey = {}
 		for oldShape in @shapes
@@ -52,6 +66,7 @@ module.exports = class Group
 		for oldShape in remove
 			@removeShape oldShape
 
+
 	updateShapeForNewModel: (model) ->
 		key = model.key
 		shape = _.filter @shapes, (shape) ->
@@ -71,7 +86,8 @@ module.exports = class Group
 				needToTween = true
 				tweenMap.propsToTween[property] = [startValue, endValue]
 
-		@tweener.registerObjectToTween(tweenMap) if needToTween
+		if needToTween
+			@tweener.registerObjectToTween(tweenMap)
 
 	# override with a specific shape
 	insertShapeWithModel: (model) ->

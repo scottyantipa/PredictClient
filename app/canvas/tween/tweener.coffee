@@ -29,17 +29,16 @@ module.exports = class Tweener
 			for tween in @registeredTweens
 				if not tween.startTime then tween.startTime = now
 				
-				x = (now - tween.startTime) / duration
+				x = (now - tween.startTime) / tween.duration
 				if x > 1 then x = 1 # to be safe
 				if x < 0 then x = 0
 				if x is 1
 					tween.Remove = true
 					continue
-
 				x = @tweenRateFct x
 
 				if tween.custom
-					{custom, startTime, duration} = tween
+					console.warn 'no custom objs in tweener yet'
 				else
 					{objToTween, propsToTween, startTime, duration} = tween
 					for property, [startValue, endValue] of propsToTween
@@ -51,11 +50,14 @@ module.exports = class Tweener
 							newValue = @valueForX x, startValue, endValue
 						objToTween[property] = newValue
 
+					objToTween.needsRedraw = true
+
 			# remove the finished tweens
 			@registeredTweens = _.filter @registeredTweens, (tween) ->
 				not tween.Remove
 
 			@afterTweenFct()
+			
 		requestAnimationFrame @processFrame
 
 	valueForX: (x, start, end) ->

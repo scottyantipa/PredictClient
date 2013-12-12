@@ -1,16 +1,12 @@
-###
-Labels for horizontal lines of a measure axis
-###
-
 Group = require '../group'
 Text = require '../../shape/subclass/text'
 TextModel = require '../../shape/subclass/textModel'
 
 module.exports = class TickLabelsGroup extends Group
-
 	updateModel: ->
 		newShapeModels = @createNewShapes()
 		@updateShapes newShapeModels
+		super
 
 	# Place shapes next to horizontal lines (on LHS for now)
 	createNewShapes: ->

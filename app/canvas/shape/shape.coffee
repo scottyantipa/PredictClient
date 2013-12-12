@@ -10,4 +10,5 @@ module.exports = class Shape
 		ctx.strokeStyle = stroke if stroke
 		ctx.fillStyle = fill if fill
 		ctx.lineWidth = lineWidth if lineWidth
+		@model.needsRedraw = false
 		# the rest should be in the subclass
