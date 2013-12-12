@@ -22,15 +22,13 @@ module.exports = class Widget
 
 	# the rest should be done in subclass
 	updateModel: ->
-		for layer in @layers
-			layer.updateModel()
+		layer.updateModel() for layer in @layers
 		@draw()
 
 	# Fat arrow beacuse it gets called from tweener
 	draw: =>
-		for layer in @layers
-			layer.draw()
-
+		layer.draw() for layer in @layers
+			
 	onClick: (e) ->
 		return
 

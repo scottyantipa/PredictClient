@@ -46,7 +46,7 @@ module.exports = class ProbabilityTicksLayer extends Layer
 				y: y
 			j++
 
-		$.extend @ticksGroup.model, {bounds, waterMarks, w, h, tx, ty}
-		$.extend @labelsGroup.model, {bounds, waterMarks, w, h, tx, ty}
+		@extendChildModel @ticksGroup, {bounds, waterMarks, w, h, tx, ty}
+		@extendChildModel @labelsGroup, {bounds, waterMarks, w, h, tx, ty}
 
 		super
