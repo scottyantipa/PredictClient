@@ -2,6 +2,7 @@ Layer = require '../layer'
 TicksGroup = require '../../group/subclass/probabilityTicksGroup'
 TickLabelsGroup = require '../../group/subclass/tickLabelsGroup'
 GroupModel = require '../../group/groupModel'
+Klass = require '../../util/klass'
 
 module.exports = class ProbabilityTicksLayer extends Layer
 	minDistanceBetweenLines: 30
@@ -46,7 +47,7 @@ module.exports = class ProbabilityTicksLayer extends Layer
 				y: y
 			j++
 
-		@extendChildModel @ticksGroup, {bounds, waterMarks, w, h, tx, ty}
-		@extendChildModel @labelsGroup, {bounds, waterMarks, w, h, tx, ty}
+		Klass.extendChildModel @ticksGroup, {bounds, waterMarks, w, h, tx, ty}
+		Klass.extendChildModel @labelsGroup, {bounds, waterMarks, w, h, tx, ty}
 
 		super

@@ -22,7 +22,9 @@ module.exports = class Widget
 
 	# the rest should be done in subclass
 	updateModel: ->
-		layer.updateModel() for layer in @layers
+		for layer in @layers
+			continue if not layer.modelHasChanged
+			layer.updateModel()
 		@draw()
 
 	# Fat arrow beacuse it gets called from tweener

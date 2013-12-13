@@ -3,7 +3,8 @@ EventPointsLayer = require '../../layer/subclass/eventPointsLayer'
 ProbabilityTicksLayer = require '../../layer/subclass/probabilityTicksLayer'
 LayerModel = require '../../layer/layerModel'
 PredictionEventModel = require '../../../models/predictionEventModel'
-LinearScale = require '../../../util/linearScale'
+LinearScale = require '../../util/linearScale'
+Klass = require '../../util/klass'
 
 module.exports = class ChartWidget extends Widget
 	constructor: ({@model, @$element, @delegate}) ->
@@ -81,7 +82,7 @@ module.exports = class ChartWidget extends Widget
 			range: [2, 30] # min, max radius
 
 		{events, timeScale, probabilityScale, hotScale, w, h, pad, plotHeight, plotWidth} = @model
-		$.extend @eventPointsLayer.model, {events, timeScale, probabilityScale, hotScale, w, h, pad, plotHeight, plotWidth}
-		$.extend @probabilityTicksLayer.model, {probabilityScale, timeScale, w, h, pad, plotHeight, plotWidth}
+		Klass.extendChildModel @eventPointsLayer, {events, timeScale, probabilityScale, hotScale, w, h, pad, plotHeight, plotWidth}
+		Klass.extendChildModel @probabilityTicksLayer, {probabilityScale, timeScale, w, h, pad, plotHeight, plotWidth}
 
 		super

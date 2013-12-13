@@ -1,6 +1,7 @@
 Layer = require '../layer'
 EventPointsGroup = require '../../group/subclass/eventPointsGroup'
 GroupModel = require '../../group/groupModel'
+Klass = require '../../util/klass'
 
 module.exports = class EventPointsLayer extends Layer
 
@@ -19,6 +20,6 @@ module.exports = class EventPointsLayer extends Layer
 		tx = left
 		ty = top
 		
-		@extendChildModel @eventsGroup, {events, timeScale, probabilityScale, hotScale, w, h, tx, ty}
+		Klass.extendChildModel @eventsGroup, {events, timeScale, probabilityScale, hotScale, w, h, tx, ty}
 
 		super

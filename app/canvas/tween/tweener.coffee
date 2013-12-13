@@ -13,9 +13,8 @@ requestAnimationFrame =
 		animLastTime = currTime + timeToCall
 		id
 
-
 module.exports = class Tweener
-	STANDARD_DURATION: 1000
+	STANDARD_DURATION: 500
 
 	constructor: (@afterTweenFct) ->
 		@registeredTweens = []
