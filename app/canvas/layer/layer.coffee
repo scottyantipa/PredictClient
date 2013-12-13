@@ -11,9 +11,6 @@ module.exports = class Layer
 		@$canvas.height = @pixelRatio * @model.h
 		if not @groups then @groups = [] # safety net
 
-	# If the subclass hasn't changed the
-	# model for a group, then don't call updateModel
-	# on that group
 	updateModel: ->
 		for group in @groups
 			continue if not group.modelHasChanged

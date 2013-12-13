@@ -8,8 +8,14 @@ module.exports = class Klass
 	# then don't update the model, and dont flag it for redraw
 	@extendChildModel: (group, updates) ->
 		group.modelHasChanged = false
+		propsToUpdate = []
+		
 		for property, value of updates
 			if not  _.isEqual group.model[property], value
-				group.model[property] = value
-				group.modelHasChanged = true
-				group.needsRedraw = true
+				propsToUpdate.push [property]
+		
+		if propsToUpdate.length isnt 0
+			for property in propsToUpdate
+				group.model[property] = updates[property]
+			group.modelHasChanged = true
+			group.needsRedraw = true
