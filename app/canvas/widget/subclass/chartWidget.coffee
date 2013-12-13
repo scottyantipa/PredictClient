@@ -81,8 +81,12 @@ module.exports = class ChartWidget extends Widget
 			domain: [0, 100]
 			range: [2, 30] # min, max radius
 
-		{events, timeScale, probabilityScale, hotScale, w, h, pad, plotHeight, plotWidth} = @model
-		Klass.extendChildModel @eventPointsLayer, {events, timeScale, probabilityScale, hotScale, w, h, pad, plotHeight, plotWidth}
-		Klass.extendChildModel @probabilityTicksLayer, {probabilityScale, timeScale, w, h, pad, plotHeight, plotWidth}
-
 		super
+
+	updatesForChildren: ->
+		{events, timeScale, probabilityScale, hotScale, w, h, pad, plotHeight, plotWidth} = @model
+
+		[
+			[@eventPointsLayer, {events, timeScale, probabilityScale, hotScale, w, h, pad, plotHeight, plotWidth}]
+			[@probabilityTicksLayer, {probabilityScale, timeScale, w, h, pad, plotHeight, plotWidth}]
+		]

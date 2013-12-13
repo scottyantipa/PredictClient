@@ -1,5 +1,7 @@
 Tweener = require '../tween/tweener'
-module.exports = class Widget
+BaseCanvasView = require '../base/baseCanvasView'
+
+module.exports = class Widget extends BaseCanvasView
 	layers: null
 	model: null # a WidgetModel
 	delegate: null # usually the main app
@@ -22,9 +24,7 @@ module.exports = class Widget
 
 	# the rest should be done in subclass
 	updateModel: ->
-		for layer in @layers
-			continue if not layer.modelHasChanged
-			layer.updateModel()
+		super
 		@draw()
 
 	# Fat arrow beacuse it gets called from tweener

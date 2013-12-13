@@ -8,9 +8,9 @@ LineModel = require '../../shape/subclass/lineModel'
 
 module.exports = class ProbabilityTicksGroup extends Group
 	updateModel: ->
+		super
 		newShapeModels = @createNewShapes()
 		@updateShapes newShapeModels
-		super
 
 	createNewShapes: ->
 		{bounds, waterMarks} = @model

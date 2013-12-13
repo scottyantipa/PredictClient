@@ -18,7 +18,7 @@ module.exports = class ProbabilityTicksLayer extends Layer
 		@groups = [@ticksGroup, @labelsGroup]
 		super
 
-	updateModel: ->
+	updatesForChildren: ->
 		{probabilityScale, timeScale, pad, plotHeight, plotWidth} = @model
 		{top, left} = pad
 		w = plotWidth
@@ -47,7 +47,7 @@ module.exports = class ProbabilityTicksLayer extends Layer
 				y: y
 			j++
 
-		Klass.extendChildModel @ticksGroup, {bounds, waterMarks, w, h, tx, ty}
-		Klass.extendChildModel @labelsGroup, {bounds, waterMarks, w, h, tx, ty}
-
-		super
+		[
+			[@ticksGroup, {bounds, waterMarks, w, h, tx, ty}]
+			[@labelsGroup, {bounds, waterMarks, w, h, tx, ty}]
+		]
