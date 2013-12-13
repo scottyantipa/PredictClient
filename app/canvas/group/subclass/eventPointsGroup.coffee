@@ -3,12 +3,12 @@ Point = require '../../shape/subclass/point'
 PointModel = require '../../shape/subclass/pointModel'
 
 module.exports = class EventPointsGroup extends Group
-	updateModel: ->
+	updateModel: (options) ->
+		super
 		newShapeModels = 
 			for prediction in @model.events
 				@newModelForPrediction(prediction)
 		@updateShapes newShapeModels
-		super
 				
 	newModelForPrediction: (prediction) ->
 		{date, probability, hot, key} = prediction

@@ -49,6 +49,8 @@ module.exports = class Tweener
 							newValue = @valueForX x, startValue, endValue
 						objToTween[property] = newValue
 
+					# This obj could be a shape, a group, a layer
+					# So set the flag that it needs to be redrawn (whatever that means)
 					objToTween.needsRedraw = true
 
 			# remove the finished tweens

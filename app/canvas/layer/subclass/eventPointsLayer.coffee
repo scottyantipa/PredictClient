@@ -12,7 +12,7 @@ module.exports = class EventPointsLayer extends Layer
 		@groups = [@eventsGroup]
 		super
 
-	updateModel: ->
+	updatesForChildren: ->
 		{events, timeScale, probabilityScale, hotScale, w, h, pad, plotHeight, plotWidth} = @model
 		{top, left} = pad
 		w = plotWidth
@@ -20,6 +20,6 @@ module.exports = class EventPointsLayer extends Layer
 		tx = left
 		ty = top
 		
-		Klass.extendChildModel @eventsGroup, {events, timeScale, probabilityScale, hotScale, w, h, tx, ty}
-
-		super
+		[
+			[@eventsGroup, {events, timeScale, probabilityScale, hotScale, w, h, tx, ty}]
+		]

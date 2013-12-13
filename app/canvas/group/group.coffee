@@ -1,6 +1,7 @@
 Layer = require '../layer/layer'
+BaseCanvasView = require '../base/baseCanvasView'
 
-module.exports = class Group
+module.exports = class Group extends BaseCanvasView
 	model: null # GroupModel
 	shapes: null # Shape array
 	needsRedraw: false
@@ -21,11 +22,6 @@ module.exports = class Group
 #
 # Managing shapes
 #
-
-	# Needs to be overriden in subclass
-	updateModel: ->
-		return
-
 	# Needing redraw can be determined in two ways.
 	# Either this group removes/adds shapes itelf, or
 	# an external object changes a shape model directly
