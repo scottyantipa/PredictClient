@@ -4,7 +4,8 @@ module.exports = class BaseCanvasView
 	# want to compare old model with updates for fancy animation, etc
 	updateModel: (updates) ->
 		$.extend @model, updates
-		child.updateModel(childUpdates) for [child, childUpdates] in @updatesForChildren()	
+		for [child, childUpdates] in @updatesForChildren()	
+			child.updateModel(childUpdates)
 		# the rest should be in subclass
 
 	# Returns an array of array, like:  [[child, update]..], where the updates

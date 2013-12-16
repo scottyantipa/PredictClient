@@ -2,7 +2,6 @@ Layer = require '../layer'
 TicksGroup = require '../../group/subclass/probabilityTicksGroup'
 TickLabelsGroup = require '../../group/subclass/tickLabelsGroup'
 GroupModel = require '../../group/groupModel'
-Klass = require '../../util/klass'
 
 module.exports = class ProbabilityTicksLayer extends Layer
 	minDistanceBetweenLines: 50
