@@ -13,7 +13,6 @@ module.exports = class TimeAxisLabelsGroup extends Group
 	createNewShapes: ->
 		{axisTicks} = @model
 		for tick in axisTicks
-			# console.log tick
 			new LineModel tick
 
 	newShapeWithOptions: (options) ->
