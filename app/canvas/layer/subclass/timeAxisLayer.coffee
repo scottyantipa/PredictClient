@@ -9,7 +9,7 @@ module.exports = class TimeAxisLayer extends Layer
 	KEY_DIVIDER: "::"
 	FIRST_LETTER_OF_EACH_DAY: ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 	NUM_DAYS_EACH_MONTH: [31, null, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-	PIXELS_BETWEEN_TICKS: 6 # minimal padding between every vert line in the time axis
+	PIXELS_BETWEEN_TICKS: 12 # minimal padding between every vert line in the time axis
 	COLOR_TICK_LABEL: "#B8B7B6" # dark grey -- "#959391"
 	COLOR_TICK_LABEL_SELECTED: "#B39F09" #ruby --"#A30339"# gold--"#C9C920" #light blue "#049BB3"
 	COLOR_OUTERMOST_HASH: "#ABABAB" # the vertical hash lines on the time axis
