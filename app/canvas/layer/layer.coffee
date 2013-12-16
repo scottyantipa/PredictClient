@@ -37,3 +37,6 @@ module.exports = class Layer extends BaseCanvasView
 		h *= @pixelRatio
 		@$canvas.attr 'width', w
 		@$canvas.attr 'height', h
+
+	children: ->
+		@groups

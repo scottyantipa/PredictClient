@@ -10,3 +10,7 @@ module.exports = class Point extends Shape
 		ctx.closePath()
 		ctx.fill() if fill
 		# ctx.stroke() if stroke
+
+	boundingBox: ->
+		{r, x, y} = @model
+		[x - r, y - r, 2 * r, 2 * r]

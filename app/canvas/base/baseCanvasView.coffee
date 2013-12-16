@@ -1,3 +1,8 @@
+###
+Super class for widget, layer, group
+SHOULD MAKE SUPERCLASS OF Shape????
+###
+
 module.exports = class BaseCanvasView
 
 	# for now, just change the model.  Eventually we'll
@@ -7,6 +12,11 @@ module.exports = class BaseCanvasView
 		for [child, childUpdates] in @updatesForChildren()	
 			child.updateModel(childUpdates)
 		# the rest should be in subclass
+
+	# Pass onClick to all children unless one returns false
+	onClick: (options) ->
+		for child in @children()
+			break if not child.onClick options
 
 	# Returns an array of array, like:  [[child, update]..], where the updates
 	# are the new props for the child
