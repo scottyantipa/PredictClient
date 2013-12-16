@@ -1,3 +1,5 @@
+CanvasLog = require '../util/log'
+
 requestAnimationFrame =
 	window.requestAnimationFrame or
 	window.webkitRequestAnimationFrame or
@@ -33,6 +35,8 @@ module.exports = class Tweener
 				if x < 0 then x = 0
 				if x is 1
 					tween.Remove = true
+					tween.fps = tween.numTimesTweens / tween.duration * 1000
+					console.log 'fps: ', tween.fps if CanvasLog.fps
 					continue
 				x = @tweenRateFct x
 
@@ -61,7 +65,11 @@ module.exports = class Tweener
 				not tween.Remove
 
 			@afterTweenFct()
-			
+
+			if CanvasLog.fps
+				tween.numTimesTweens++ for tween in @registeredTweens
+					
+
 		requestAnimationFrame @processFrame
 
 	valueForX: (x, start, end) ->
@@ -87,6 +95,7 @@ module.exports = class Tweener
 	###
 	registerObjectToTween: (object) =>
 		object.duration ?= @STANDARD_DURATION
+		object.numTimesTweens ?= 0
 		@registeredTweens.push object
 
 	tweenFunctions:
