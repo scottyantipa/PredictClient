@@ -18,6 +18,31 @@ module.exports = class Group extends BaseCanvasView
 			shape.draw(ctx)
 			ctx.restore()
 		@needsRedraw = false
+#
+# Click handling
+#
+
+	onClick: (e) ->
+		shape = @shapeBeneathPoint
+			x: e.offsetX - @model.tx
+			y: e.offsetY - @model.ty
+		if shape
+			# do stuff here and return false
+			return false
+		true # so other groups can catch the event
+
+	shapeBeneathPoint: ({x, y}) ->
+		selectedShape = null
+		for shape in @shapes
+			if shape.doesIntersectPoint x, y
+				selectedShape = shape
+		selectedShape
+
+
+	children: ->
+		@shapes
+
+
 
 #
 # Managing shapes

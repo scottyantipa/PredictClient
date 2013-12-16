@@ -2,7 +2,7 @@ Tweener = require '../tween/tweener'
 BaseCanvasView = require '../base/baseCanvasView'
 
 module.exports = class Widget extends BaseCanvasView
-	layers: null
+	layers: null # [], determines order of click events
 	model: null # a WidgetModel
 	delegate: null # usually the main app
 
@@ -30,10 +30,9 @@ module.exports = class Widget extends BaseCanvasView
 	# Fat arrow beacuse it gets called from tweener
 	draw: =>
 		layer.draw() for layer in @layers
-			
-	onClick: (e) ->
-		return
 
 	onMouseMove: (e) ->
 		return 
 	
+	children: ->
+		@layers
