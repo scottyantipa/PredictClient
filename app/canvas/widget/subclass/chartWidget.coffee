@@ -1,20 +1,22 @@
 Widget = require '../widget'
 EventPointsLayer = require '../../layer/subclass/eventPointsLayer'
 ProbabilityTicksLayer = require '../../layer/subclass/probabilityTicksLayer'
+TimeAxisLayer = require '../../layer/subclass/timeAxisLayer'
 LayerModel = require '../../layer/layerModel'
 PredictionEventModel = require '../../../models/predictionEventModel'
 LinearScale = require '../../util/linearScale'
-Klass = require '../../util/klass'
 
 module.exports = class ChartWidget extends Widget
 	constructor: ({@model, @$element, @delegate}) ->
+		{w, h} = @model
+
 		probabilityTicksCanvas = $('<canvas class="probability-ticks"></canvas>')
 		@$element.append probabilityTicksCanvas
 		@probabilityTicksLayer = new ProbabilityTicksLayer
 			$canvas: probabilityTicksCanvas
 			model: new LayerModel
-				w: @model.w
-				h: @model.h
+				w: w
+				h: h
 
 		# create a layer for Points, append the <canvas>
 		eventCanvas = $('<canvas class="event-layer"></canvas>')
@@ -22,10 +24,18 @@ module.exports = class ChartWidget extends Widget
 		@eventPointsLayer = new EventPointsLayer
 			$canvas: eventCanvas
 			model: new LayerModel
-				w: @model.w
-				h: @model.h
+				w: w
+				h: h
 
-		@layers = [@probabilityTicksLayer, @eventPointsLayer]
+		timeAxisCanvas = $('<canvas class="time-axis"></canvas>')
+		@$element.append timeAxisCanvas
+		@timeAxisLayer = new TimeAxisLayer
+			$canvas: timeAxisCanvas
+			model: new LayerModel
+				w: w
+				h: h
+
+		@layers = [@probabilityTicksLayer, @eventPointsLayer, @timeAxisLayer]
 		super
 
 	# Called by appView when dataManager gets data back
@@ -89,4 +99,5 @@ module.exports = class ChartWidget extends Widget
 		[
 			[@eventPointsLayer, {events, timeScale, probabilityScale, hotScale, w, h, pad, plotHeight, plotWidth}]
 			[@probabilityTicksLayer, {probabilityScale, timeScale, w, h, pad, plotHeight, plotWidth}]
+			[@timeAxisLayer, {timeScale, w, h, pad, plotHeight, plotWidth}]
 		]

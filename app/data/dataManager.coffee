@@ -26,8 +26,8 @@ module.exports = class DataManager
 				key: i + startKey
 
 	dateForPrediction: (random = true, numEvents, i) ->
-		minDate = new Date 2013, 1, 1
-		maxDate = new Date 2030, 1, 1
+		minDate = new Date 2011, 1, 1
+		maxDate = new Date 2011, 3, 1
 		epochDelta = maxDate.getTime() - minDate.getTime()
 		epochStep = epochDelta / numEvents
 		probabilityStep = 100 / numEvents

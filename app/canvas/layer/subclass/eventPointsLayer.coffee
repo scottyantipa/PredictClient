@@ -1,10 +1,8 @@
 Layer = require '../layer'
 EventPointsGroup = require '../../group/subclass/eventPointsGroup'
 GroupModel = require '../../group/groupModel'
-Klass = require '../../util/klass'
 
 module.exports = class EventPointsLayer extends Layer
-
 	constructor: ({@$canvas, @model}) ->
 		@eventsGroup = new EventPointsGroup
 			model: new GroupModel
