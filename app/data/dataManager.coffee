@@ -12,18 +12,33 @@ module.exports = class DataManager
 
 	# Create fake predictions from random data
 	createFakeData: (random = true, numEvents = 20, startKey = 0) ->
-		for i in [1..numEvents]
-			if random
-				date: @dateForPrediction(true, numEvents)
-				probability: Math.random() * 100
-				hot: Math.random() * 100
-				key: i + startKey
+		predictions = 
+			for i in [1..numEvents]
+				if random
+					date: @dateForPrediction(true, numEvents)
+					probability: Math.random() * 100
+					hot: Math.random() * 100
+					key: i + startKey
 
-			else
-				date: @dateForPrediction(false, numEvents, i)
-				probability: probabilityStep * i
-				hot: probabilityStep * i
-				key: i + startKey
+				else
+					date: @dateForPrediction(false, numEvents, i)
+					probability: probabilityStep * i
+					hot: probabilityStep * i
+					key: i + startKey
+
+		@createConnections predictions
+		predictions
+
+	# Create the connections between predictions so
+	# we can draw lines between them
+	createConnections: (predictions) ->
+		numPredictions = predictions.length - 1
+		for prediction, index in predictions
+			continue if index % 2 is 0 # just do it for half of them
+			connection = predictions[Math.floor(Math.random() * numPredictions)] # grab a random one
+			if not connection
+				console.warn 'no connection'
+			prediction.connections = [connection.key]
 
 	dateForPrediction: (random = true, numEvents, i) ->
 		minDate = new Date 2011, 1, 1
@@ -44,12 +59,17 @@ module.exports = class DataManager
 
 	addNewFakeData: ->
 		numExistingEvents = @state.results.length
-		newEvents = @createFakeData true, 20, numExistingEvents
-		@state.results = @state.results.concat newEvents
+		newPredictions = @createFakeData true, 20, numExistingEvents
+		prediction.connections = null for prediction in newPredictions
+		@createConnections newPredictions
+		@state.results = @state.results.concat newPredictions
 
 	removeTopHalf: ->
-		@state.results = _.filter @state.results, (result) ->
+		newPredictions = _.filter @state.results, (result) ->
 			result.probability < 50
+		prediction.connections = null for prediction in newPredictions
+		@createConnections newPredictions
+		@state.results = newPredictions
 
 	updateBottomHalf: ->
 		results = @state.results

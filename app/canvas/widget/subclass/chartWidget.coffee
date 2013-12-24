@@ -1,5 +1,5 @@
 Widget = require '../widget'
-EventPointsLayer = require '../../layer/subclass/eventPointsLayer'
+PredictionPointsLayer = require '../../layer/subclass/predictionPointsLayer'
 ProbabilityTicksLayer = require '../../layer/subclass/probabilityTicksLayer'
 TimeAxisLayer = require '../../layer/subclass/timeAxisLayer'
 LayerModel = require '../../layer/layerModel'
@@ -21,7 +21,7 @@ module.exports = class ChartWidget extends Widget
 		# create a layer for Points, append the <canvas>
 		eventCanvas = $('<canvas class="event-layer"></canvas>')
 		@$element.append eventCanvas
-		@eventPointsLayer = new EventPointsLayer
+		@predictionPointsLayer = new PredictionPointsLayer
 			$canvas: eventCanvas
 			model: new LayerModel
 				w: w
@@ -35,11 +35,11 @@ module.exports = class ChartWidget extends Widget
 				w: w
 				h: h
 
-		@layers = [@probabilityTicksLayer, @eventPointsLayer, @timeAxisLayer]
+		@layers = [@probabilityTicksLayer, @predictionPointsLayer, @timeAxisLayer]
 		super
 
 	# Called by appView when dataManager gets data back
-	# Get results and structure model with: events, scales
+	# Get results and structure model with: predictions, scales
 	onDataChange: ->
 		@updateModel()
 
@@ -57,7 +57,7 @@ module.exports = class ChartWidget extends Widget
 		# populate model.events
 		earliestDate = null
 		latestDate = null
-		@model.events = 
+		@model.predictions = 
 			for prediction in state.results
 				[date, epoch]  = [prediction.date, prediction.date.getTime()]
 				if not earliestDate or epoch < earliestDate.getTime()
@@ -94,10 +94,10 @@ module.exports = class ChartWidget extends Widget
 		super
 
 	updatesForChildren: ->
-		{events, timeScale, probabilityScale, hotScale, w, h, pad, plotHeight, plotWidth} = @model
+		{predictions, timeScale, probabilityScale, hotScale, w, h, pad, plotHeight, plotWidth} = @model
 
 		[
-			[@eventPointsLayer, {events, timeScale, probabilityScale, hotScale, w, h, pad, plotHeight, plotWidth}]
+			[@predictionPointsLayer, {predictions, timeScale, probabilityScale, hotScale, w, h, pad, plotHeight, plotWidth}]
 			[@probabilityTicksLayer, {probabilityScale, timeScale, w, h, pad, plotHeight, plotWidth}]
 			[@timeAxisLayer, {timeScale, w, h, pad, plotHeight, plotWidth}]
 		]

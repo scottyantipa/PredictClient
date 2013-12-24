@@ -10,6 +10,7 @@ module.exports = class PredictionEventModel
 		'title' # string
 		'key' # string
 		'hot' # scale 0 to 1
+		'connections' # array of keys
 	]
 	
 	# init all the values with the config, or null them

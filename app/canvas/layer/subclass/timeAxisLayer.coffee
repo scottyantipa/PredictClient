@@ -18,11 +18,8 @@ module.exports = class TimeAxisLayer extends Layer
 	SMALLEST_HASH_MARK: 12 # shortest length of vert lines in time axis
 
 	constructor: ({@$canvas, @model}) ->
-		@ticksGroup = new Ticks
-			model: new GroupModel
-		@labelsGroup = new Labels
-			model: new GroupModel
-
+		@ticksGroup = new Ticks {}
+		@labelsGroup = new Labels {}
 		@groups = [@ticksGroup, @labelsGroup]
 		super
 
