@@ -16,7 +16,7 @@ requestAnimationFrame =
 		id
 
 module.exports = class Tweener
-	STANDARD_DURATION: 500
+	STANDARD_DURATION: 1000
 
 	constructor: (@afterTweenFct) ->
 		@registeredTweens = []
@@ -64,7 +64,7 @@ module.exports = class Tweener
 			@registeredTweens = _.filter @registeredTweens, (tween) ->
 				not tween.Remove
 
-			@afterTweenFct()
+			@afterTweenFct() # for a widget, this runs draw() on the canvases
 
 			if CanvasLog.fps
 				tween.numTimesTweens++ for tween in @registeredTweens

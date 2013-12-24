@@ -10,7 +10,7 @@ module.exports = class BaseCanvasView
 	updateModel: (updates) ->
 		$.extend @model, updates
 		for [child, childUpdates] in @updatesForChildren()	
-			child.updateModel(childUpdates)
+			child.updateModel childUpdates
 		# the rest should be in subclass
 
 	# Pass onClick to all children unless one returns false

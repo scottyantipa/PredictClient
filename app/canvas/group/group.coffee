@@ -1,14 +1,15 @@
 Layer = require '../layer/layer'
 BaseCanvasView = require '../base/baseCanvasView'
+GroupModel = require './groupModel'
 
 module.exports = class Group extends BaseCanvasView
 	model: null # GroupModel
 	shapes: null # Shape array
 	needsRedraw: false
 
-	constructor: ({@layer, @model}) ->
+	constructor: ({@model}) ->
 		@shapes = []
-		@model = {}
+		if not @model then @model = new GroupModel
 
 	draw: (ctx) ->
 		for shape in @shapes
