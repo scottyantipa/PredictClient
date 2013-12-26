@@ -1,6 +1,7 @@
 Group = require '../group'
 Line = require '../../shape/subclass/line'
 LineModel = require '../../shape/subclass/lineModel'
+Styling = require '../../util/styling'
 
 module.exports = class PredictionLinesGroup extends Group
 	lineKeySeparator: "::"
@@ -45,6 +46,7 @@ module.exports = class PredictionLinesGroup extends Group
 			y0: points[0].y
 			y1: points[1].y
 			key: key
+			opacity: Styling.GRID_LINE_OPACITY
 
 	# Takes array of two predictions and returns a key
 	keyForLine: (predictions) ->
