@@ -58,6 +58,14 @@ module.exports = class AppView extends Backbone.View
 	onClickUpdate: (e) ->
 		@dataManager.updateBottomHalf()
 		@onDataChange()
+	
+	onClickOneYear: (e) ->
+		@dataManager.createStandardOneYear()
+		@onDataChange()
+
+	onClickYearAndHalf: (e) ->
+		@dataManager.createStandardYearAndHalf()
+		@onDataChange()
 
 	sizeForChart: ->
 		w: $('body').width()
