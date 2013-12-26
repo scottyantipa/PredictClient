@@ -214,7 +214,7 @@ module.exports = class TimeAxisLayer extends Layer
 				when "month"
 					# start with the first full month, unless we have less than a month of data
 					numGrainsInDateString = 2
-					isOneMonth = startDate.getMonth() is endDate.getMonth()
+					isOneMonth = startDate.getMonth() is endDate.getMonth() and startDate.getFullYear() is endDate.getFullYear()
 					if startDate.getDate() > 15 and not isOneMonth
 						startDate.setMonth startDate.getMonth() + 1
 						startDate.setDate 1

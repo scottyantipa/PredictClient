@@ -45,10 +45,9 @@ module.exports = class Tweener
 				else
 					{objToTween, propsToTween, startTime, duration} = tween
 					for property, [startValue, endValue] of propsToTween
-						if property is "color"
-							console.warn 'no color tweening yet for objToTween: ', objToTween
-						if property is "text"
-							console.warn 'no text tweening yet for objToTween: ', objToTween
+						if property is "color" or property is "text"
+							newValue = endValue
+							tween.Remove
 						else # regular int values
 							newValue = @valueForX x, startValue, endValue
 						objToTween[property] = newValue

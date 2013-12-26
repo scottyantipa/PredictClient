@@ -11,17 +11,19 @@ module.exports = class DataManager
 		@state.results = @createFakeData()
 
 	# Create fake predictions from random data
-	createFakeData: (random = true, numEvents = 20, startKey = 0) ->
+	createFakeData: (random = true, numEvents = 20, startKey = 0, start, end) ->
 		predictions = 
 			for i in [1..numEvents]
 				if random
-					date: @dateForPrediction(true, numEvents)
+					date: @dateForPrediction(true, numEvents, start, end)
 					probability: Math.random() * 100
 					hot: Math.random() * 100
 					key: i + startKey
 
 				else
-					date: @dateForPrediction(false, numEvents, i)
+					probabilityStep = 100 / numEvents
+
+					date: @dateForPrediction(false, numEvents, i, start, end)
 					probability: probabilityStep * i
 					hot: probabilityStep * i
 					key: i + startKey
@@ -40,9 +42,9 @@ module.exports = class DataManager
 				console.warn 'no connection'
 			prediction.connections = [connection.key]
 
-	dateForPrediction: (random = true, numEvents, i) ->
-		minDate = new Date 2011, 1, 1
-		maxDate = new Date 2011, 3, 1
+	dateForPrediction: (random = true, numEvents, i, start, end) ->
+		minDate = if start then start else new Date 2011, 1, 1
+		maxDate = if end then end else new Date 2011, 3, 1
 		epochDelta = maxDate.getTime() - minDate.getTime()
 		epochStep = epochDelta / numEvents
 		probabilityStep = 100 / numEvents
@@ -78,6 +80,12 @@ module.exports = class DataManager
 			result.probability = 100 * Math.random()
 			result.hot = 100 * Math.random()
 		@state.results = results
+
+	createStandardOneYear: ->
+		@state.results = @createFakeData false, 20, 0, new Date(2011, 0, 1), new Date(2012, 0, 1)
+
+	createStandardYearAndHalf: ->
+		@state.results = @createFakeData false, 20, 0, new Date(2011, 0, 1), new Date(2012, 7, 1)
 
 	# just for resting
 	fetchAll: (callBack) ->
