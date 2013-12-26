@@ -3,6 +3,7 @@ GroupModel = require '../../group/groupModel'
 Ticks = require '../../group/subclass/timeAxisTicksGroup'
 Labels = require '../../group/subclass/timeAxisLabelsGroup'
 DateUtils = require '../../../util/dateUtils'
+Styling = require '../../util/styling'
 	
 module.exports = class TimeAxisLayer extends Layer
 	DATE_STR_DIVIDER: "/"
@@ -26,11 +27,12 @@ module.exports = class TimeAxisLayer extends Layer
 	# Calculate the labels and tick marks for the time axis
 	# pass these models down to the groups
 	updatesForChildren: ->
+		{plotHeight, plotWidth} = @model
 		{axisLabels, axisTicks} = @calcShapes()
 		{tx, ty} = @calcGroupPositions()
 		[
 			[@labelsGroup, {axisLabels, tx, ty}]
-			[@ticksGroup, {axisTicks, tx, ty}]
+			[@ticksGroup, {axisTicks, tx, ty, plotHeight}]
 		]
 
 	calcGroupPositions: ->
@@ -234,7 +236,6 @@ module.exports = class TimeAxisLayer extends Layer
 				when "year"
 					numGrainsInDateString = 1
 					# start with the first full year, unless we have one year of data
-					# or there are two years, but the next year only has Jan (so we may
 					isOneYear = startDate.getFullYear() is endDate.getFullYear()
 					if not isOneYear and endDate.getMonth() isnt 0 # jan
 						startDate.setFullYear startDate.getFullYear() + 1
@@ -273,7 +274,6 @@ module.exports = class TimeAxisLayer extends Layer
 		y = @getY row, numRows
 
 		# get x
-		type: "text"
 		fontSize: fontSize 
 		x: xPos + addLeftHandOffset
 		y: y
@@ -285,7 +285,6 @@ module.exports = class TimeAxisLayer extends Layer
 		{key, row, numRows, xPos} = tickHash
 		length = @getY row, numRows
 
-		type: "line"
 		x0: xPos
 		x1: xPos
 		y0: 0
@@ -310,9 +309,9 @@ module.exports = class TimeAxisLayer extends Layer
 	# The Y length of a hash mark
 	getY: (row, numRows) ->
 		if row is 1
-			@SMALLEST_HASH_MARK
+			@SMALLEST_HASH_MARK + Styling.MAX_RADIUS / 2
 		else
-			@SMALLEST_HASH_MARK * row + 2
+			@SMALLEST_HASH_MARK * row + 2 + Styling.MAX_RADIUS / 2 
 
 	# styling
 	getStroke: (row, numRows, isInSelection) ->

@@ -1,6 +1,11 @@
+###
+Responsible for drawing the labels on the vertical probability axis
+###
+
 Group = require '../group'
 Text = require '../../shape/subclass/text'
 TextModel = require '../../shape/subclass/textModel'
+Styling = require '../../util/styling'
 
 module.exports = class TickLabelsGroup extends Group
 
@@ -17,7 +22,7 @@ module.exports = class TickLabelsGroup extends Group
 				fontSize: 12
 				text: "#{value}%"
 				y: y + 4
-				x: bounds.left - 40
+				x: bounds.left - Styling.SCATTER_CHART_AXIS_PADDING - 30
 				key: value
 
 	newShapeWithOptions: (options) ->

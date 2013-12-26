@@ -5,6 +5,7 @@ TimeAxisLayer = require '../../layer/subclass/timeAxisLayer'
 LayerModel = require '../../layer/layerModel'
 PredictionEventModel = require '../../../models/predictionEventModel'
 LinearScale = require '../../util/linearScale'
+Styling = require '../../util/styling'
 
 module.exports = class ChartWidget extends Widget
 	constructor: ({@model, @$element, @delegate}) ->
@@ -18,6 +19,14 @@ module.exports = class ChartWidget extends Widget
 				w: w
 				h: h
 
+		timeAxisCanvas = $('<canvas class="time-axis"></canvas>')
+		@$element.append timeAxisCanvas
+		@timeAxisLayer = new TimeAxisLayer
+			$canvas: timeAxisCanvas
+			model: new LayerModel
+				w: w
+				h: h
+
 		# create a layer for Points, append the <canvas>
 		eventCanvas = $('<canvas class="event-layer"></canvas>')
 		@$element.append eventCanvas
@@ -27,15 +36,7 @@ module.exports = class ChartWidget extends Widget
 				w: w
 				h: h
 
-		timeAxisCanvas = $('<canvas class="time-axis"></canvas>')
-		@$element.append timeAxisCanvas
-		@timeAxisLayer = new TimeAxisLayer
-			$canvas: timeAxisCanvas
-			model: new LayerModel
-				w: w
-				h: h
-
-		@layers = [@probabilityTicksLayer, @predictionPointsLayer, @timeAxisLayer]
+		@layers = [@probabilityTicksLayer, @timeAxisLayer, @predictionPointsLayer]
 		super
 
 	# Called by appView when dataManager gets data back
@@ -67,7 +68,7 @@ module.exports = class ChartWidget extends Widget
 				new PredictionEventModel(prediction)
 
 		# Calculate where the axis should be placed
-		pad = 100
+		pad = Styling.CHART_PAD
 		@model.pad =
 			top: pad
 			right: pad
@@ -89,7 +90,7 @@ module.exports = class ChartWidget extends Widget
 
 		@model.hotScale = new LinearScale
 			domain: [0, 100]
-			range: [2, 30] # min, max radius
+			range: [Styling.MIN_RADIUS, Styling.MAX_RADIUS] # min, max radius
 
 		super
 
