@@ -10,4 +10,3 @@ module.exports = class CanvasStyling
 
 	# Color
 	@CHART_LINES_FILL: "#C4C2C2"
-	@GRID_LINE_OPACITY: .5
