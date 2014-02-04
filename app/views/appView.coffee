@@ -13,6 +13,7 @@ module.exports = class AppView extends Backbone.View
 
 	initialize: ({@el}) ->
 		@render()
+		@onResize = _.debounce @onResize, 500
 
 		chromeModel = new Backbone.Model
 		chromeModel.set 'title', @appTitle
@@ -37,9 +38,20 @@ module.exports = class AppView extends Backbone.View
 
 	render: ->
 		@el.append @template
+		@setBrowserEvents()
 
 	onDataChange: ->
 		@chartWidget.onDataChange()
+
+	###
+	Browser events
+	###	
+	setBrowserEvents: ->
+		$(window).on "resize", @onResize
+
+	onResize: =>
+		_.extend @chartWidget.model, @sizeForChart()
+		@chartWidget.updateModel()
 
 	###
 	Delegate methods

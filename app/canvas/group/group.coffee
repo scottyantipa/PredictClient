@@ -43,8 +43,6 @@ module.exports = class Group extends BaseCanvasView
 	children: ->
 		@shapes
 
-
-
 #
 # Managing shapes
 #
@@ -59,14 +57,14 @@ module.exports = class Group extends BaseCanvasView
 		false
 
 	# Given a hash of the newly calculated shapes
-	# we need to remove/add/update existing shapes
+	# calculate which shapes need to be removed/added/updated
+	# and then call methods on each set (subclass may handle them)
 	updateShapes: (newShapeModels) ->
 		@needsRedraw = true
 		[insert, remove, update] = [ [], [], [] ]
 		oldShapesByKey = {}
 		for oldShape in @shapes
 			oldShapesByKey[oldShape.model.key] = oldShape 
-
 		for newModel in newShapeModels
 			key = newModel.key
 			if oldShapesByKey.hasOwnProperty(key)
@@ -74,19 +72,17 @@ module.exports = class Group extends BaseCanvasView
 			else
 				insert.push newModel
 			delete oldShapesByKey[key]
-
 		# Remove any remaining old shapes (not pushed to update)
 		for key of oldShapesByKey
 			remove.push oldShapesByKey[key] 
 		
+		# Handle the update/insert/remove
 		for newModel in update
 			@updateShapeForNewModel newModel
-
 		for newModel in insert
 			@insertShapeWithOptions 
 				model: newModel
 				delegate: @
-
 		for oldShape in remove
 			@removeShape oldShape
 
@@ -127,7 +123,11 @@ module.exports = class Group extends BaseCanvasView
 		tweenMap = @tweenMapForRemoveShape shape
 		@tweener.registerObjectToTween(tweenMap) if tweenMap
 
-	# should most likely override this
+	###
+	Default tweening for adding/removing shapes just fades opacity
+	You can override these if you want fancy animations in/out (like with time axis)
+	At some point we should have multiple default ways of tweening in/out (like fly off screen)
+	###
 	tweenMapForRemoveShape: (shape) ->
 		startOpacity = shape.model.opacity # set initial state
 

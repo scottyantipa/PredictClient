@@ -11,6 +11,7 @@ module.exports = class ChartWidget extends Widget
 	constructor: ({@model, @$element, @delegate}) ->
 		{w, h} = @model
 
+		# a layer for the horizontal probability lines
 		probabilityTicksCanvas = $('<canvas class="probability-ticks"></canvas>')
 		@$element.append probabilityTicksCanvas
 		@probabilityTicksLayer = new ProbabilityTicksLayer
@@ -19,6 +20,7 @@ module.exports = class ChartWidget extends Widget
 				w: w
 				h: h
 
+		# a layer for the time axis
 		timeAxisCanvas = $('<canvas class="time-axis"></canvas>')
 		@$element.append timeAxisCanvas
 		@timeAxisLayer = new TimeAxisLayer
@@ -27,7 +29,7 @@ module.exports = class ChartWidget extends Widget
 				w: w
 				h: h
 
-		# create a layer for Points, append the <canvas>
+		# create a layer for Points that represent each prediction
 		eventCanvas = $('<canvas class="event-layer"></canvas>')
 		@$element.append eventCanvas
 		@predictionPointsLayer = new PredictionPointsLayer
@@ -46,9 +48,8 @@ module.exports = class ChartWidget extends Widget
 
 	###
 	For now, let's have parents update their child's model.
-	Then, when call a global redraw. This means:
+	Then whe call a global redraw. This means:
 	-- No animation (model0 not tracked)
-	-- Redraw every layer, rather than selectively
 	-- All views must be able to redraw themselves just from model
 	###
 	updateModel: ->

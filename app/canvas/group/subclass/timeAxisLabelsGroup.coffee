@@ -9,7 +9,6 @@ module.exports = class TimeAxisLabelsGroup extends Group
 		newShapeModels = @createNewShapes()
 		@updateShapes newShapeModels
 
-	# Place shapes next to horizontal lines (on LHS for now)
 	createNewShapes: ->
 		{axisLabels} = @model
 		for label in axisLabels
@@ -17,3 +16,9 @@ module.exports = class TimeAxisLabelsGroup extends Group
 
 	newShapeWithOptions: (options) ->
 		new Text options
+
+	tweenMapForAddShape: (shape) ->
+		@tweenMapAddShapeForGroups shape # parent method
+
+	tweenMapForRemoveShape: (shape) ->
+		@tweenMapRemoveShapeForGroups shape # parent method

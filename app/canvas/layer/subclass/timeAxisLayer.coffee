@@ -22,17 +22,20 @@ module.exports = class TimeAxisLayer extends Layer
 		@ticksGroup = new Ticks {}
 		@labelsGroup = new Labels {}
 		@groups = [@ticksGroup, @labelsGroup]
+		group.tweenMapAddShapeForGroups = @tweenMapAddShapeForGroups for group in @groups
+		group.tweenMapRemoveShapeForGroups = @tweenMapRemoveShapeForGroups for group in @groups
 		super
 
 	# Calculate the labels and tick marks for the time axis
 	# pass these models down to the groups
+	# We dont implement an updateModel here because it doesn't need to alter its own model, just the children
 	updatesForChildren: ->
-		{plotHeight, plotWidth} = @model
+		{plotHeight, plotWidth, timeScale} = @model
 		{axisLabels, axisTicks} = @calcShapes()
 		{tx, ty} = @calcGroupPositions()
 		[
-			[@labelsGroup, {axisLabels, tx, ty}]
-			[@ticksGroup, {axisTicks, tx, ty, plotHeight}]
+			[@labelsGroup, {axisLabels, timeScale, tx, ty}]
+			[@ticksGroup, {axisTicks, timeScale, tx, ty, plotHeight}]
 		]
 
 	calcGroupPositions: ->
@@ -86,7 +89,7 @@ module.exports = class TimeAxisLayer extends Layer
 				$.extend tick, {row, numRows, grain}
 				tick.key = @formatKeyForTick tick
 
-		hashByKey = {} # will eventually be added to axisLabels
+		hashByKey = {} # will eventually be added to axisTicks
 		i = tickGroups.length
 		while i > 0 
 			tickGroup = tickGroups[i - 1]
@@ -154,12 +157,10 @@ module.exports = class TimeAxisLayer extends Layer
 				text = @formatTimeAxisLabel tick, truncateIndex
 				continue if not text # we won't display them at all because there's no space
 				textWidth = @ctx.measureText(text).width
-				middleEpoch = DateUtils.midPointOfGrain date, grain
-				centerInPixels = timeScale.map middleEpoch
-				xPos = centerInPixels - textWidth / 2 # offset from center because it is drawn from left
-				continue if xPos + textWidth > timeScale.dy # don't draw it if the label goes over the chart width
-				$.extend tick, {text, fontSize, xPos}
-				innerTicksToDraw.push @formatTickLayout(tick)
+				$.extend tick, {text, fontSize, textWidth}
+				tick = @formatTickLayout tick
+				continue if tick.x + textWidth > timeScale.dy # don't draw it if the label goes over the chart width
+				innerTicksToDraw.push tick
 
 		# For outer most ticks, figure out how many to skip (if not enough space for all)
 		outerMostTickGroup = _.last tickGroups
@@ -183,10 +184,10 @@ module.exports = class TimeAxisLayer extends Layer
 				@addHashMarkFromTick tick, hashByKey, timeScale, true
 				text = @formatTimeAxisLabel tick, outerMostTickGroup.truncateIndex
 				textWidth = fontRatio * @ctx.measureText(text).width
-				xPos = timeScale.map tick.date.getTime()
-				continue if xPos + textWidth > timeScale.dy # don't draw the label if it goes over the edge
-				$.extend tick, {text, fontSize, xPos}
-				outerTicksToDraw.push @formatTickLayout(tick)
+				tick = @formatTickLayout(tick)
+				$.extend tick, {text, fontSize}
+				continue if tick.x + textWidth > timeScale.dy # don't draw the label if it goes over the edge
+				outerTicksToDraw.push tick
 
 		# push in our shapes
 		axisTicks = (@formatHashMarkLayout(hash) for epoch, hash of hashByKey) # the vert lines
@@ -263,33 +264,18 @@ module.exports = class TimeAxisLayer extends Layer
 		ticks
 
 
-	# Formats a text label, returning a skeleton for the model
+	# Formats positions for labels
 	formatTickLayout: (tick) ->
-		{key, row, numRows, text, xPos, fontSize} = tick
-		addLeftHandOffset =
-			if row is numRows
-			then 5 # it's left aligned, so give it padding
-			else 0 # its centered already
+		tick.y = @getY tick
+		tick.x = @getX tick
+		tick
 
-		y = @getY row, numRows
-
-		# get x
-		fontSize: fontSize 
-		x: xPos + addLeftHandOffset
-		y: y
-		text: text
-		key: key
-
-	# Formats the tick mark lines on axis
+	# Formats positions for the vert lines on the time axis
 	formatHashMarkLayout: (tickHash) ->
-		{key, row, numRows, xPos} = tickHash
-		length = @getY row, numRows
-
-		x0: xPos
-		x1: xPos
-		y0: 0
-		y1: length
-		key: key
+		x = @getX tickHash
+		y = @getY tickHash
+		$.extend tickHash, {x0: x, x1: x, y0: 0, y1: y}
+		tickHash
 
 	#--------------------------------------------------------------------------------
 	# Styling
@@ -306,8 +292,25 @@ module.exports = class TimeAxisLayer extends Layer
 		else
 			@FONT_LARGEST_TIME_AXIS
 
+	getX: (shape, timeScale = @model.timeScale) ->
+		isLabel = @typeOfShapeFromKey(shape.key) is 'tick'
+		if isLabel
+			{key, row, numRows, date, grain, textWidth} = shape
+			epoch = date.getTime()
+			if row is numRows
+				timeScale.map(epoch) + 5 # some padding
+			else # middle align the text
+				middleEpoch = DateUtils.midPointOfGrain(date, grain).getTime()
+				centerInPixels = timeScale.map middleEpoch
+				centerInPixels - textWidth/2
+		else
+			epoch = shape.date.getTime()
+			timeScale.map epoch
+
+
 	# The Y length of a hash mark
-	getY: (row, numRows) ->
+	getY: (shape) ->
+		{row} = shape
 		if row is 1
 			@SMALLEST_HASH_MARK + Styling.MAX_RADIUS / 2
 		else
@@ -335,15 +338,14 @@ module.exports = class TimeAxisLayer extends Layer
 		dateArray = [date.getFullYear(), date.getMonth(), date.getDate()][0...numGrainsInDateString]
 		dateArray.join @DATE_STR_DIVIDER
 
-
 	addHashMarkFromTick: (tick, hashMap, timeScale, shouldOverride = false) ->
 		tickHash = $.extend {}, tick
 		epoch = tick.date.getTime()
 		hashKey = @formatKeyForHashMark tickHash
-		return if not shouldOverride and hashMap[epoch]
+		return if not shouldOverride and hashMap[epoch] # dont draw if there's already a tick on that spot
 		hashMap[epoch] = tickHash # may override a previous one, which is good
 		tickHash.key = hashKey
-		tickHash.xPos = timeScale.map tickHash.date.getTime()
+		tickHash.x = timeScale.map tickHash.date.getTime()
 
 	# returns the type of the shape (based on the key). Could be a tick or a hash.
 	typeOfShapeFromKey: (key) =>
@@ -406,3 +408,36 @@ module.exports = class TimeAxisLayer extends Layer
 					else
 						# this is the smallest text we can show for that tick (month and quarter override this)
 						if row is numRows then dateObj[grain] else ""
+
+
+# ----------------------------------------------
+# Special tweening for adding/removing shapes.  These functions
+# get passed to our child groups to be used.
+# ----------------------------------------------
+	tweenMapAddShapeForGroups: (shape) =>
+		propsToTween = {} # figure out what we can tween and put it in here
+		{opacity, date, x} = shape.model
+		epoch = date.getTime()
+
+		if oldTimeScale = @previousModel?.timeScale # we can tween x position if theres an old time scale
+			startX = @getX shape.model, oldTimeScale
+			propsToTween.x = [startX, x]
+		propsToTween.opacity = [0, opacity]
+
+		objToTween: shape.model
+		propsToTween: propsToTween
+		delegate: shape.delegate
+		status: 'add'
+
+
+	tweenMapRemoveShapeForGroups: (shape) =>
+		{opacity, x} = shape.model
+		propsToTween = {}
+		if timeScale = @model?.timeScale
+			propsToTween.x = [x, @getX(shape.model, timeScale)]
+		propsToTween.opacity = [opacity, 0]
+
+		objToTween: shape.model
+		propsToTween: propsToTween
+		delegate: shape.delegate
+		status: 'remove'

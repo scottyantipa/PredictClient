@@ -20,3 +20,9 @@ module.exports = class TimeAxisLabelsGroup extends Group
 
 	newShapeWithOptions: (options) ->
 		new Line options
+
+	tweenMapForAddShape: (shape) ->
+		@tweenMapAddShapeForGroups shape # parent method
+
+	tweenMapForRemoveShape: (shape) ->
+		@tweenMapRemoveShapeForGroups shape

@@ -45,7 +45,7 @@ module.exports = class DataManager
 	dateForPrediction: (random = true, numEvents, i, start, end) ->
 		minDate = if start then start else new Date 2011, 1, 1
 		maxDate = if end then end else new Date 2011, 3, 1
-		epochDelta = maxDate.getTime() - minDate.getTime()
+		epochDelta = (maxDate.getTime() - minDate.getTime()) * 5
 		epochStep = epochDelta / numEvents
 		probabilityStep = 100 / numEvents
 		if random
