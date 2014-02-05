@@ -18,56 +18,56 @@ requestAnimationFrame =
 module.exports = class Tweener
 	STANDARD_DURATION: 1000
 
-	constructor: (@afterTweenFct) ->
-		@registeredTweens = []
-		@processFrame() # kick it off
-		@tweenRateFct = @tweenFunctions.sine
+	constructor: (@afterTweenFct, tweenFct = 'sine') ->
+		@keyCounter = 0
+		@registeredTweens = [] # just make sure its at least an array
+		@processFrame() # kick it off immediately (may want to provide a start() method instead)
+		@tweenRateFct = @tweenFunctions[tweenFct]
 
 	# Check if there are shapes to tween, then tween them
 	processFrame: =>
-		if @registeredTweens?.length > 0
-			now = (new Date()).getTime()
-			for tween in @registeredTweens
-				if not tween.startTime then tween.startTime = now
+		now = (new Date()).getTime()
+		for tween in @registeredTweens
+			if not tween.startTime then tween.startTime = now
+			x = (now - tween.startTime) / tween.duration
+			if x > 1 then x = 1 # to be safe
+			if x < 0 then x = 0
+			if x is 1
+				tween.remove = true
+				tween.fps = tween.numTimesTweens / tween.duration * 1000
+				if CanvasLog.fps then console.log 'fps: ', tween.fps 
+				continue
+			x = @tweenRateFct x
+
+			if tween.custom
+				console.warn 'no custom objs in tweener yet'
+			else
+				{objToTween, propsToTween, startTime, duration} = tween
+				for property, [startValue, endValue] of propsToTween
+					continue if startValue is endValue
+					if property is "color" or property is "text"
+						newValue = endValue
+					else # regular int values
+						newValue = @valueForX x, startValue, endValue
+					objToTween[property] = newValue
+
+				# This obj could be a shape, a group, a layer
+				# So set the flag that it needs to be redrawn (whatever that means)
+				objToTween.needsRedraw = true
+
+		# alert tween delegates when tween has finished (like group gets notified if shape is done tweening)
+		for tween in @registeredTweens
+			if tween.remove then tween.delegate.didFinishTween(tween)
+
+		# filter down list of tweens to just the incomplete ones
+		@registeredTweens = _.filter @registeredTweens, (tween) ->
+			not tween.remove
+
+		@afterTweenFct() # for a widget, this runs draw() on the canvases
+
+		if CanvasLog.fps
+			tween.numTimesTweens++ for tween in @registeredTweens
 				
-				x = (now - tween.startTime) / tween.duration
-				if x > 1 then x = 1 # to be safe
-				if x < 0 then x = 0
-				if x is 1
-					tween.Remove = true
-					tween.fps = tween.numTimesTweens / tween.duration * 1000
-					console.log 'fps: ', tween.fps if CanvasLog.fps
-					continue
-				x = @tweenRateFct x
-
-				if tween.custom
-					console.warn 'no custom objs in tweener yet'
-				else
-					{objToTween, propsToTween, startTime, duration} = tween
-					for property, [startValue, endValue] of propsToTween
-						if property is "color" or property is "text"
-							newValue = endValue
-							tween.Remove
-						else # regular int values
-							newValue = @valueForX x, startValue, endValue
-						objToTween[property] = newValue
-
-					# This obj could be a shape, a group, a layer
-					# So set the flag that it needs to be redrawn (whatever that means)
-					objToTween.needsRedraw = true
-
-			# remove the finished tweens
-			for tween in @registeredTweens
-				if tween.Remove then tween.delegate.didFinishTween(tween)
-
-			@registeredTweens = _.filter @registeredTweens, (tween) ->
-				not tween.Remove
-
-			@afterTweenFct() # for a widget, this runs draw() on the canvases
-
-			if CanvasLog.fps
-				tween.numTimesTweens++ for tween in @registeredTweens
-					
 
 		requestAnimationFrame @processFrame
 
@@ -80,12 +80,13 @@ module.exports = class Tweener
 
 	###
 	Should look like
+		objToTween: some_model
 		custom:
-			args: {}
+			args: {} (e.g. {model, prop1, prop2,...})
 			fct: () ->
 		duration: ms
 	or
-		objToTween: shapeObject
+		objToTween: some_model
 		propsToTween:
 			prop1: [startVal, endVal]
 			prop2: [startVal, endVal]
@@ -94,8 +95,17 @@ module.exports = class Tweener
 	###
 	registerObjectToTween: (object) =>
 		object.duration ?= @STANDARD_DURATION
-		object.numTimesTweens ?= 0
+		object.numTimesTweens ?= 0 # for testing fps
+		object.objToTween.tweenKey ?= @keyForNewObjToTween()
 		@registeredTweens.push object
+
+# ---------------------------------
+# Utils 
+# ---------------------------------
+	# We put a key on the object thats being tweened (like the model of a shape)
+	# So that if the shape gets registered/unregistered later we will know
+	keyForNewObjToTween: ->
+		"tweenKey||#{@keyCounter++}"
 
 	tweenFunctions:
 		linear: (v) -> v

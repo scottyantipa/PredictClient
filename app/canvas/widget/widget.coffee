@@ -16,19 +16,13 @@ module.exports = class Widget extends BaseCanvasView
 			.click((e) => @onClick(e))
 			.mousemove((e) => @onMouseMove(e))
 
-		@tweener = new Tweener @draw
-		for layer in @layers
-			layer.tweener = @tweener
-			for group in layer.groups
-				group.tweener = @tweener
-
 	# the rest should be done in subclass
 	updateModel: ->
 		super
 		@draw()
 
-	# Fat arrow beacuse it gets called from tweener
-	draw: =>
+	# called when there is a data change
+	draw: ->
 		layer.draw() for layer in @layers
 
 	onMouseMove: (e) ->
