@@ -8,17 +8,18 @@ module.exports = class DataManager
 		query: {}
 	
 	constructor: ->
+		@keyCounter = 1
 		@state.results = @createFakeData()
 
 	# Create fake predictions from random data
-	createFakeData: (random = true, numEvents = 20, startKey = 0, start, end) ->
+	createFakeData: (random = true, numEvents = 20, start, end) ->
 		predictions = 
 			for i in [1..numEvents]
 				if random
 					date: @dateForPrediction(true, numEvents, start, end)
 					probability: Math.random() * 100
 					hot: Math.random() * 100
-					key: i + startKey
+					key: @keyCounter++
 
 				else
 					probabilityStep = 100 / numEvents
@@ -26,7 +27,7 @@ module.exports = class DataManager
 					date: @dateForPrediction(false, numEvents, i, start, end)
 					probability: probabilityStep * i
 					hot: probabilityStep * i
-					key: i + startKey
+					key: @keyCounter++
 
 		@createConnections predictions
 		predictions
@@ -49,8 +50,8 @@ module.exports = class DataManager
 		epochStep = epochDelta / numEvents
 		probabilityStep = 100 / numEvents
 		if random
-			epoch = minDate.getTime() + (epochDelta * Math.random())
-			adjustment = Math.random() * epochDelta
+			epoch = minDate.getTime() + Math.floor(epochDelta * Math.random())
+			adjustment = Math.floor(Math.random() * epochDelta)
 			if Math.random() < .5
 				epoch += adjustment
 			else
@@ -61,7 +62,7 @@ module.exports = class DataManager
 
 	addNewFakeData: ->
 		numExistingEvents = @state.results.length
-		newPredictions = @createFakeData true, 20, numExistingEvents
+		newPredictions = @createFakeData true, 20
 		prediction.connections = null for prediction in newPredictions
 		@createConnections newPredictions
 		@state.results = @state.results.concat newPredictions
@@ -82,10 +83,10 @@ module.exports = class DataManager
 		@state.results = results
 
 	createStandardOneYear: ->
-		@state.results = @createFakeData false, 20, 0, new Date(2011, 0, 1), new Date(2012, 0, 1)
+		@state.results = @createFakeData false, 20, new Date(2011, 0, 1), new Date(2012, 0, 1)
 
 	createStandardYearAndHalf: ->
-		@state.results = @createFakeData false, 20, 0, new Date(2011, 0, 1), new Date(2012, 7, 1)
+		@state.results = @createFakeData false, 20, new Date(2011, 0, 1), new Date(2012, 7, 1)
 
 	# just for resting
 	fetchAll: (callBack) ->

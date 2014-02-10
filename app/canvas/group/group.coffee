@@ -86,7 +86,8 @@ module.exports = class Group extends BaseCanvasView
 		for oldShape in remove
 			@removeShape oldShape
 
-
+	# Figure out how the old and new model are different
+	# and register those diffs with the tweener
 	updateShapeForNewModel: (model) ->
 		key = model.key
 		shape = _.filter @shapes, (shape) ->
@@ -95,7 +96,7 @@ module.exports = class Group extends BaseCanvasView
 		oldModel = shape.model
 		tweenMap =
 			objToTween: shape.model
-			propsToTween: {}
+			propsToTween: []
 			delegate: shape.delegate
 			status: "update"
 
@@ -106,7 +107,8 @@ module.exports = class Group extends BaseCanvasView
 				oldModel[property] = endValue
 			else if not _.isEqual startValue, endValue
 				needToTween = true
-				tweenMap.propsToTween[property] = [startValue, endValue]
+				propertyToTween = {propName: property, startValue, endValue}
+				tweenMap.propsToTween.push propertyToTween
 
 		if needToTween
 			@tweener.registerObjectToTween(tweenMap)
@@ -116,7 +118,7 @@ module.exports = class Group extends BaseCanvasView
 		shape = @newShapeWithOptions options
 		@shapes.push shape
 		tweenMap = @tweenMapForAddShape shape
-		@tweener.registerObjectToTween(tweenMap) if tweenMap
+		@tweener.registerObjectToTween(tweenMap) if @tweenMapForAddShape
 		return
 
 	removeShape: (shape) =>
@@ -129,25 +131,33 @@ module.exports = class Group extends BaseCanvasView
 	At some point we should have multiple default ways of tweening in/out (like fly off screen)
 	###
 	tweenMapForRemoveShape: (shape) ->
-		startOpacity = shape.model.opacity # set initial state
+		{model} = shape
 
-		objToTween: shape.model
-		propsToTween:
-			opacity: [startOpacity, 0]
-		delegate: shape.delegate
+		objToTween: model
 		status: 'remove'
-
+		delegate: shape.delegate
+		propsToTween: [
+			propName: 'opacity'
+			startValue: model.opacity
+			endValue: 0
+		]
+		
 	tweenMapForAddShape: (shape) ->
-		startOpacity = 0
+		{model} = shape
 
-		objToTween: shape.model
-		propsToTween:
-			opacity: [startOpacity, shape.model.opacity]
+		objToTween: model
 		delegate: shape.delegate
 		status: 'add'
+		propsToTween: [
+			propName: 'opacity'
+			startValue: 0
+			endValue: model.opacity
+		]
 
 
-	# Delegate methods
+	# Delegate methods -----------------
+
+	# Tweener tells us when its finished a tween
 	didFinishTween: (tween) =>
 		switch tween.status
 			when 'remove'
