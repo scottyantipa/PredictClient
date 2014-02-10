@@ -1,5 +1,10 @@
 module.exports = class CanvasStyling
 
+	# Color
+	@CHART_LINES_FILL: "#C4C2C2"
+	@CONNECTING_PREDICTION_LINES: "#3079F0"
+	@AXIS_LABEL_OPACITY: .5
+
 	# Shapes
 	@MIN_RADIUS: 2
 	@MAX_RADIUS: 30
@@ -8,5 +13,5 @@ module.exports = class CanvasStyling
 	@SCATTER_CHART_AXIS_PADDING: CanvasStyling.MAX_RADIUS
 	@CHART_PAD = 80
 
-	# Color
-	@CHART_LINES_FILL: "#C4C2C2"
+	# Animation
+	@DEFAULT_ANIMATION_DURATION: 1500

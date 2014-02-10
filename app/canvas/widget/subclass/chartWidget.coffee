@@ -53,6 +53,11 @@ module.exports = class ChartWidget extends Widget
 	-- All views must be able to redraw themselves just from model
 	###
 	updateModel: ->
+		# size our div container
+		{w, h} = @model
+		@$element.css 'width', w
+		@$element.css 'height', h
+
 		state = @delegate.state() # this won't work with multiple chart widgets
 		
 		# calculate earliest/latest dates and

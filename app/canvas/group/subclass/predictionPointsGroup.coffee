@@ -5,6 +5,7 @@ Manages the circles that represent certain predictions
 Group = require '../group'
 Point = require '../../shape/subclass/point'
 PointModel = require '../../shape/subclass/pointModel'
+Styling = require '../../util/styling'
 
 module.exports = class EventPointsGroup extends Group
 	updateModel: (options) ->
@@ -58,10 +59,10 @@ module.exports = class EventPointsGroup extends Group
 			propName: 'r'
 			startValue: model.r
 			endValue: model.r / 2
-			duration: 600
+			duration: Styling.DEFAULT_ANIMATION_DURATION / 2
 		,
 			propName: 'opacity'
 			startValue: model.opacity
 			endValue: 0
-			duration: 800
+			duration: Styling.DEFAULT_ANIMATION_DURATION
 		]

@@ -266,15 +266,23 @@ module.exports = class TimeAxisLayer extends Layer
 
 	# Formats positions for labels
 	formatTickLayout: (tick) ->
-		tick.y = @getY tick
-		tick.x = @getX tick
+		$.extend tick, 
+			y: @getY tick
+			x: @getX tick
+			opacity: @getOpacity()
+		# tick.y = @getY tick
+		# tick.x = @getX tick
 		tick
 
 	# Formats positions for the vert lines on the time axis
 	formatHashMarkLayout: (tickHash) ->
 		x = @getX tickHash
-		y = @getY tickHash
-		$.extend tickHash, {x0: x, x1: x, y0: 0, y1: y}
+		$.extend tickHash,
+			x0: x
+			x1: x
+			y0: 0
+			y1: @getY tickHash
+			opacity: @getOpacity()
 		tickHash
 
 	#--------------------------------------------------------------------------------
@@ -291,6 +299,9 @@ module.exports = class TimeAxisLayer extends Layer
 			@FONT_LARGEST_TIME_AXIS - 2
 		else
 			@FONT_LARGEST_TIME_AXIS
+
+	getOpacity: ->
+		Styling.AXIS_LABEL_OPACITY
 
 	getX: (shape, timeScale = @model.timeScale) ->
 		isLabel = @typeOfShapeFromKey(shape.key) is 'tick'
@@ -440,8 +451,6 @@ module.exports = class TimeAxisLayer extends Layer
 		{opacity, x} = shape.model
 		propsToTween = []
 		if timeScale = @model?.timeScale
-			if Object.prototype.toString.call(shape.model.date) isnt "[object Date]"
-				console.log 'not a date: ', shape.model.date
 			propsToTween.push
 				propName: 'x'
 				startValue: x

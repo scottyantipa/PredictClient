@@ -1,4 +1,5 @@
 CanvasLog = require '../util/log'
+Styling = require '../util/styling'
 
 requestAnimationFrame =
 	window.requestAnimationFrame or
@@ -16,7 +17,6 @@ requestAnimationFrame =
 		id
 
 module.exports = class Tweener
-	STANDARD_DURATION: 1000
 	STANDARD_TWEEN_FCT: 'sine'
 
 	constructor: (@afterTweenFct) ->
@@ -50,7 +50,7 @@ module.exports = class Tweener
 	###
 	registerObjectToTween: (tween) =>
 		tween.tweenKey ?= "tweenKey:#{@keyCounter++}"
-		tween.duration ?= @STANDARD_DURATION # dont need to pass a duration if you dont care
+		tween.duration ?= Styling.DEFAULT_ANIMATION_DURATION # dont need to pass a duration if you dont care
 		# Make sure each property to tween has a duration
 		for propertyToTween in tween.propsToTween
 			propertyToTween.duration ?= tween.duration

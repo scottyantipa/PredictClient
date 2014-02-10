@@ -15,6 +15,7 @@ module.exports = class ProbabilityTicksGroup extends Group
 
 	createNewShapes: ->
 		{bounds, waterMarks, h} = @model
+		lineWidth = .2
 		shapes = 
 			for {y, value} in waterMarks
 				new LineModel
@@ -24,6 +25,7 @@ module.exports = class ProbabilityTicksGroup extends Group
 					y1: y
 					key: value
 					stroke: Styling.CHART_LINES_FILL
+					lineWidth: lineWidth
 		
 		# now add a big vertical line at 0
 		shapes.push new LineModel
@@ -33,6 +35,7 @@ module.exports = class ProbabilityTicksGroup extends Group
 			y1: h
 			key: @VERT_AXIS_KEY
 			stroke: Styling.CHART_LINES_FILL
+			lineWidth: lineWidth
 
 
 		shapes
