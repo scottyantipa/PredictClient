@@ -1,4 +1,10 @@
+###
+Responsible for managing a canvas element and Groups (which manage shapes)
+It has its own Tweener because it can redraw itself independently of the rest of the layers
+###
+
 BaseCanvasView = require '../base/baseCanvasView'
+Tweener = require '../tween/tweener'
 
 module.exports = class Layer extends BaseCanvasView
 	groups: null
@@ -12,8 +18,12 @@ module.exports = class Layer extends BaseCanvasView
 		@$canvas.width = @pixelRatio * @model.w
 		@$canvas.height = @pixelRatio * @model.h
 		if not @groups then @groups = [] # safety net
+		@tweener = new Tweener @draw
+		for group in @groups
+			group.tweener = @tweener
 
-	draw: ->
+	# Called by Tweener so fat arrow
+	draw: =>
 		needsRedraw = false
 		for group in @groups
 			if group.doesNeedRedraw()

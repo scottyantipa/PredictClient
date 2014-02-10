@@ -415,15 +415,21 @@ module.exports = class TimeAxisLayer extends Layer
 # get passed to our child groups to be used.
 # ----------------------------------------------
 	tweenMapAddShapeForGroups: (shape) =>
-		propsToTween = {} # figure out what we can tween and put it in here
-		{opacity, date, x} = shape.model
-		epoch = date.getTime()
+		propsToTween = [] # figure out what we can tween and put it in here
+		{opacity, x} = shape.model
 
 		if oldTimeScale = @previousModel?.timeScale # we can tween x position if theres an old time scale
 			startX = @getX shape.model, oldTimeScale
-			propsToTween.x = [startX, x]
-		propsToTween.opacity = [0, opacity]
+			propsToTween.push
+				propName: 'x'
+				startValue: startX
+				endValue: x
 
+		propsToTween.push
+			propName: 'opacity'
+			startValue: 0
+			endValue: opacity
+		
 		objToTween: shape.model
 		propsToTween: propsToTween
 		delegate: shape.delegate
@@ -432,10 +438,19 @@ module.exports = class TimeAxisLayer extends Layer
 
 	tweenMapRemoveShapeForGroups: (shape) =>
 		{opacity, x} = shape.model
-		propsToTween = {}
+		propsToTween = []
 		if timeScale = @model?.timeScale
-			propsToTween.x = [x, @getX(shape.model, timeScale)]
-		propsToTween.opacity = [opacity, 0]
+			if Object.prototype.toString.call(shape.model.date) isnt "[object Date]"
+				console.log 'not a date: ', shape.model.date
+			propsToTween.push
+				propName: 'x'
+				startValue: x
+				endValue: @getX(shape.model, timeScale)
+		
+		propsToTween.push
+			propName: 'opacity'
+			startValue: opacity
+			endValue: 0
 
 		objToTween: shape.model
 		propsToTween: propsToTween
