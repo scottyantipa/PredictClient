@@ -14,9 +14,9 @@ module.exports = class Layer extends BaseCanvasView
 
 	constructor: ({@$canvas, @model}) ->
 		@ctx = @$canvas[0].getContext "2d"
-		@pixelRatio = window.devicePixelRatio or 1
-		@$canvas.width = @pixelRatio * @model.w
-		@$canvas.height = @pixelRatio * @model.h
+		{w, h} = @model
+		@$canvas.width = w
+		@$canvas.height = h
 		if not @groups then @groups = [] # safety net
 		@tweener = new Tweener @draw
 		for group in @groups
@@ -43,11 +43,8 @@ module.exports = class Layer extends BaseCanvasView
 
 	setCanvasSize: ->
 		{w, h} = @model
-		w *= @pixelRatio
-		h *= @pixelRatio
 		@$canvas.attr 'width', w
 		@$canvas.attr 'height', h
-		@ctx.scale @pixelRatio, @pixelRatio if @pixelRatio != 1
 
 	children: ->
 		@groups
