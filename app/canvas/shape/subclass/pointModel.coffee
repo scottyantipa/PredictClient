@@ -4,5 +4,5 @@ module.exports = class PointModel extends ShapeModel
 	r: 5 # default radius
 	x: 0
 	y: 0
-	fill: "#B39F09"
-	stroke: "#B39F09"
+	fill: null
+	stroke: null

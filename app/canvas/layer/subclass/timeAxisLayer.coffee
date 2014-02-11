@@ -16,7 +16,7 @@ module.exports = class TimeAxisLayer extends Layer
 	COLOR_OUTERMOST_HASH: "#ABABAB" # the vertical hash lines on the time axis
 	COLOR_MINOR_HASH: "#DEDDDC"
 	FONT_LARGEST_TIME_AXIS: 14
-	SMALLEST_HASH_MARK: 12 # shortest length of vert lines in time axis
+	SMALLEST_HASH_MARK: 14 # shortest length of vert lines in time axis
 
 	constructor: ({@$canvas, @model}) ->
 		@ticksGroup = new Ticks {}
@@ -42,7 +42,7 @@ module.exports = class TimeAxisLayer extends Layer
 		{timeScale, w, h, pad, plotHeight, plotWidth} = @model
 		{top, right, bottom, left} = pad
 		tx = left
-		ty = plotHeight + top
+		ty = plotHeight + top + Styling.MAX_RADIUS
 		w = plotWidth
 		h = plotHeight
 		{tx, ty}
@@ -266,15 +266,21 @@ module.exports = class TimeAxisLayer extends Layer
 
 	# Formats positions for labels
 	formatTickLayout: (tick) ->
-		tick.y = @getY tick
-		tick.x = @getX tick
+		$.extend tick, 
+			y: @getY tick
+			x: @getX tick
+			opacity: @getOpacity tick
 		tick
 
 	# Formats positions for the vert lines on the time axis
 	formatHashMarkLayout: (tickHash) ->
 		x = @getX tickHash
-		y = @getY tickHash
-		$.extend tickHash, {x0: x, x1: x, y0: 0, y1: y}
+		$.extend tickHash,
+			x0: x
+			x1: x
+			y0: 0
+			y1: @getY tickHash
+			opacity: @getOpacity tickHash
 		tickHash
 
 	#--------------------------------------------------------------------------------
@@ -291,6 +297,10 @@ module.exports = class TimeAxisLayer extends Layer
 			@FONT_LARGEST_TIME_AXIS - 2
 		else
 			@FONT_LARGEST_TIME_AXIS
+
+	getOpacity: (shape) ->
+		isLabel = @typeOfShapeFromKey(shape.key) is 'tick'
+		if isLabel then Styling.AXIS_LABEL_OPACITY else .2
 
 	getX: (shape, timeScale = @model.timeScale) ->
 		isLabel = @typeOfShapeFromKey(shape.key) is 'tick'
@@ -312,9 +322,9 @@ module.exports = class TimeAxisLayer extends Layer
 	getY: (shape) ->
 		{row} = shape
 		if row is 1
-			@SMALLEST_HASH_MARK + Styling.MAX_RADIUS / 2
+			@SMALLEST_HASH_MARK
 		else
-			@SMALLEST_HASH_MARK * row + 2 + Styling.MAX_RADIUS / 2 
+			@SMALLEST_HASH_MARK * row + 2 
 
 	# styling
 	getStroke: (row, numRows, isInSelection) ->
@@ -440,8 +450,6 @@ module.exports = class TimeAxisLayer extends Layer
 		{opacity, x} = shape.model
 		propsToTween = []
 		if timeScale = @model?.timeScale
-			if Object.prototype.toString.call(shape.model.date) isnt "[object Date]"
-				console.log 'not a date: ', shape.model.date
 			propsToTween.push
 				propName: 'x'
 				startValue: x

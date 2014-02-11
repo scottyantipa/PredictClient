@@ -46,7 +46,9 @@ module.exports = class PredictionLinesGroup extends Group
 			y0: points[0].y
 			y1: points[1].y
 			key: key
-			stroke: Styling.CHART_LINES_FILL
+			stroke: Styling.CONNECTING_PREDICTION_LINES
+			opacity: .5
+			lineWidth: 1.3
 
 	# Takes array of two predictions and returns a key
 	keyForLine: (predictions) ->

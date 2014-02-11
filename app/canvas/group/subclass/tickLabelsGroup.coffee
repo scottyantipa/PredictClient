@@ -24,6 +24,7 @@ module.exports = class TickLabelsGroup extends Group
 				y: y + 4
 				x: bounds.left - Styling.SCATTER_CHART_AXIS_PADDING - 30
 				key: value
+				opacity: Styling.AXIS_LABEL_OPACITY
 
 	newShapeWithOptions: (options) ->
 		new Text options

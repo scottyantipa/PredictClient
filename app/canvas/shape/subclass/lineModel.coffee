@@ -8,3 +8,4 @@ module.exports = class LineModel extends ShapeModel
 	y1: null
 	fill: null
 	stroke: Styling.CHART_LINES_FILL
+	lineWidth: .5

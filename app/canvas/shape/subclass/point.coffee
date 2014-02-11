@@ -8,8 +8,9 @@ module.exports = class Point extends Shape
 		ctx.beginPath()
 		ctx.arc Math.round(x), Math.round(y), r, 0, Math.PI * 2, true
 		ctx.closePath()
+		ctx.stroke() if stroke
 		ctx.fill() if fill
-		# ctx.stroke() if stroke
+		
 
 	boundingBox: ->
 		{r, x, y} = @model
