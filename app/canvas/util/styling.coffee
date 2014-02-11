@@ -14,4 +14,4 @@ module.exports = class CanvasStyling
 	@CHART_PAD = 80
 
 	# Animation
-	@DEFAULT_ANIMATION_DURATION: 1500
+	@DEFAULT_ANIMATION_DURATION: 750

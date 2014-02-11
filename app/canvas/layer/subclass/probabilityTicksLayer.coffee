@@ -5,7 +5,7 @@ GroupModel = require '../../group/groupModel'
 
 module.exports = class ProbabilityTicksLayer extends Layer
 	minDistanceBetweenLines: 50
-	steps: [5, 10, 20, 25, 50] # factors of 100
+	steps: [25, 50] # factors of 100
 
 	constructor: ({@$canvas, @model}) ->
 		@labelsGroup = new TickLabelsGroup {}
