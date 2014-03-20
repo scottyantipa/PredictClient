@@ -1,3 +1,5 @@
+# call this from termainl (node createData.coffee) to create 
+# some fake data in the mongo db
 mongoose = require 'mongoose'
 mongoose.connect 'mongodb://localhost:27017/predict'
 db = mongoose.connection

@@ -26,10 +26,10 @@ module.exports = class EventPointsGroup extends Group
 			y: y
 			r: r
 			key: key
-			opacity: .85
-			fill: "#786A05"
-			stroke: "#B39F09"
-			lineWidth: 1.5 # smooths out the line
+			opacity: .7
+			fill: "#B39F09" #"#786A05"   "#FCDF03"
+			stroke: "#FCDF03"
+			lineWidth: 2 # smooths out the line
 
 	newShapeWithOptions: (options) ->
 		new Point options
