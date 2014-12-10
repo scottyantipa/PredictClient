@@ -17,7 +17,7 @@ db.once 'open', () ->
 
 # brunch uses this line to start the server which is specified in config
 exports.startServer = (port, path, callback) ->
-	require 'server/models/prediction' # Bootstrap models
-	require 'server/routes' # Bootstrap routes
+	require './server/models/prediction' # Bootstrap models
+	require './server/routes' # Bootstrap routes
 	app.listen port
 	console.log "Express started on #{port}"
