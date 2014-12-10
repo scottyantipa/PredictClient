@@ -1,6 +1,8 @@
-# Brunch app
+# Predict
+This is a web application meant to show case a data vizualization library which you will find under the app/canvas directory
+The library has not yet been extracted from this example web app.
 
-This is HTML5 application, built with [Brunch](http://brunch.io).
+![alt tag](https://raw.github.com/scottyantipa/PredictClient/master/screenShots/predict_screen.png)
 
 ## Getting started
 * Install (if you don't have them):
