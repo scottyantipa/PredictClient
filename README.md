@@ -6,6 +6,8 @@ As seen below, it renders and animates data in a scatter chart, plotted by time 
 
 ![alt tag](https://raw.github.com/scottyantipa/PredictClient/master/screenShots/predict_screen.png)
 
+The library structures views using the hierarchy Widget > Layer > Group > Shape.  A widget is essentially a container in which to render Layers, and each Layer has a dedicated <cavnas> node and tweening engine.  This makes it so parts of the screen can animate without having to redraw all other shapes (e.g. new data coming in will not animate the percentage axis, but will animate the existing/new/old date points).
+
 ## Getting started
 * Install (if you don't have them):
     * [Node.js](http://nodejs.org): `brew install node` on OS X
