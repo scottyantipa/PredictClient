@@ -1,6 +1,8 @@
 # Predict
-This is a web application meant to show case a data vizualization library which you will find under the app/canvas directory
+This is a web application meant to show case a data vizualization library which you will find under the app/canvas directory.
 The library has not yet been extracted from this example web app.
+
+As seen below, it renders and animates data in a scatter chart, plotted by time vs. percentage accuracy.
 
 ![alt tag](https://raw.github.com/scottyantipa/PredictClient/master/screenShots/predict_screen.png)
 
