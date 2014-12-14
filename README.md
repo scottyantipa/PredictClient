@@ -4,7 +4,7 @@ The library has not yet been extracted from this example web app.
 
 As seen below, it renders and animates data in a scatter chart, plotted by time vs. percentage accuracy.
 
-![alt tag](https://raw.github.com/scottyantipa/PredictClient/master/screenShots/predict_screen.png)
+![alt tag](http://gyazo.com/a167066d3f2418a75980b7bfff050135.gif)
 
 The library structures views using the hierarchy Widget > Layer > Group > Shape.  A widget is essentially a container in which to render Layers, and each Layer has a dedicated <cavnas> node and tweening engine.  This makes it so parts of the screen can animate without having to redraw all other shapes (e.g. new data coming in will not animate the percentage axis, but will animate the existing/new/old date points).
 
