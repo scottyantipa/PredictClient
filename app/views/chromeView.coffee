@@ -20,11 +20,3 @@ module.exports = class ChromeView extends Backbone.View
 		@$('.options :nth-child(3)').click((e) =>
 			@delegate.onClickUpdate(e)
 		)
-
-		@$('.options :nth-child(4)').click((e) =>
-			@delegate.onClickOneYear(e)
-		)
-
-		@$('.options :nth-child(5)').click((e) =>
-			@delegate.onClickYearAndHalf(e)
-		)

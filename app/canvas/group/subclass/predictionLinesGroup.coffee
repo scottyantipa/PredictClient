@@ -30,7 +30,8 @@ module.exports = class PredictionLinesGroup extends Group
 					uniqueConnections.push lineKey
 					shapes.push @newModelForPredictions [prediction, otherPrediction], lineKey
 		shapes
-		
+	
+	# Returns a LineModel connecting two predictions
 	newModelForPredictions: (predictions, key) ->
 		points = []
 		for prediction in predictions
@@ -54,9 +55,9 @@ module.exports = class PredictionLinesGroup extends Group
 	keyForLine: (predictions) ->
 		_.sortBy predictions, (prediction) ->
 			prediction.date.getTime()
-		predictions = predictions.map (prediction) ->
+		predictionKeys = predictions.map (prediction) ->
 			prediction.key
-		predictions.join @lineKeySeparator
+		predictionKeys.join @lineKeySeparator
 
 
 	newShapeWithOptions: (options) ->

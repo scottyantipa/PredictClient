@@ -155,9 +155,11 @@ module.exports = class Group extends BaseCanvasView
 		]
 
 
-	# Delegate methods -----------------
+	# Delegate methods
 
 	# Tweener tells us when its finished a tween
+	# NOTE: Great example of why @shapes should be a hash map by 
+	# key -- _.filter is expensive
 	didFinishTween: (tween) =>
 		switch tween.status
 			when 'remove'
