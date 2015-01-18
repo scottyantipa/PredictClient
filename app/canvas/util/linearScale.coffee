@@ -12,11 +12,11 @@ module.exports = class LinearScale
 	k: null 
 	b: null
 
-	constructor: ({domain, range}) ->
-		@domain domain
-		@range range
+	constructor: ({@domain, @range}) ->
+		@computeDX()
+		@computeDY()
 		@k =  @dy / @dx
-		@b = @yValueAtZero 0
+		@b = @yValueAtZero()
 
 	map: (x) ->
 		@k * x + @b
@@ -24,23 +24,21 @@ module.exports = class LinearScale
 	invert: (y) ->
 		(y - @b) / @k
 
-	# x -> y
-	yValueAtZero: (x) ->
-		x = x - @domain[0]
+	# Find the value for y when x is 0
+	# This allows us to compute y = mx + b
+	yValueAtZero: ->
+		x = @domain[0]
 		if x is 0
 			@range[0]
 		else
-			xRatio = (x/ @dx)
+			xRatio = (x / @dx)
 			@range[0] + (@dy * xRatio)
 
-# Chained setters
-	domain: (@domain) ->
+	computeDX: ->
 		@dx = Math.abs(@domain[1] - @domain[0])
-		@
 
-	range: (@range) ->
+	computeDY: ->
 		@dy = Math.abs(@range[1] - @range[0])
-		@
 
 	# This will return an array of domain values
 	# which when mapped are all at least minGapInRange apart

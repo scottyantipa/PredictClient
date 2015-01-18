@@ -1,8 +1,8 @@
 Layer = require '../layer'
 Labels = require '../../group/subclass/labelsGroup'
+Styling = require '../../util/styling'
 
-module.exports = class MeasureAxisLayer extends Layer
-	MIN_GAP_BETWEEN_LABELS: 50
+module.exports = class OrdinalAxisLayer extends Layer
 
 	constructor: ({@$canvas, @model}) ->
 		@labelsGroup = new Labels {}
@@ -14,11 +14,7 @@ module.exports = class MeasureAxisLayer extends Layer
 
 	updatesForChildren: ->
 		{pad} = @model
-
-		# The labels group will be positioned at the upper left most location
-		{top, left} = pad
-		tx = left
-		ty = top
+		{tx, ty} = @calcGroupPositions()
 		labels = @calcLabels()
 		[
 			[@labelsGroup, {labels, tx, ty}]
@@ -29,10 +25,19 @@ module.exports = class MeasureAxisLayer extends Layer
 	calcLabels: ->
 		for tick in @model.scale.ticks @MIN_GAP_BETWEEN_LABELS
 			value: tick
-			y: @model.plotHeight - @model.scale.map tick
-			x: @model.scale.range[0] - 20
+			y: 0
+			x: @model.scale.map tick
 
-	yValForShape: (shape, scale = @model.scale) ->
+	calcGroupPositions: ->
+		{scale, w, h, pad, plotHeight, plotWidth} = @model
+		{top, left} = pad
+		tx = left
+		ty = plotHeight + top + Styling.MAX_RADIUS
+		w = plotWidth
+		h = plotHeight
+		{tx, ty}
+
+	xValForShape: (shape, scale = @model.scale) ->
 		scale.map shape.value
 
 # ----------------------------------------------
@@ -41,14 +46,14 @@ module.exports = class MeasureAxisLayer extends Layer
 # ----------------------------------------------
 	tweenMapAddShapeForGroups: (shape) =>
 		propsToTween = [] # figure out what we can tween and put it in here
-		{opacity, y} = shape.model
+		{opacity, x} = shape.model
 
 
 		if oldScale = @previousModel?.scale # we can tween x position if theres an old time scale
 			propsToTween.push
-				propName: 'y'
-				startValue: @yValForShape shape.model, oldScale
-				endValue: y
+				propName: 'x'
+				startValue: @xValForShape shape.model, oldScale
+				endValue: x
 
 		propsToTween.push
 			propName: 'opacity'
@@ -61,13 +66,13 @@ module.exports = class MeasureAxisLayer extends Layer
 		status: 'add'
 
 	tweenMapRemoveShapeForGroups: (shape) =>
-		{opacity, y} = shape.model
+		{opacity, x} = shape.model
 		propsToTween = []
 		if scale = @model?.scale
 			propsToTween.push
-				propName: 'y'
-				startValue: y
-				endValue: @yValForShape(shape.model, scale)
+				propName: 'x'
+				startValue: x
+				endValue: @xValForShape(shape.model, scale)
 		
 		propsToTween.push
 			propName: 'opacity'

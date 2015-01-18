@@ -1,7 +1,9 @@
 Widget = require '../widget'
 MeasureAxisLayer = require '../../layer/subclass/measureAxisLayer'
+OrdinalAxisLayer = require '../../layer/subclass/ordinalAxisLayer'
 LayerModel = require '../../layer/layerModel'
 LinearScale = require '../../util/linearScale'
+OrdinalScale = require '../../util/ordinalScale'
 Styling = require '../../util/styling'
 
 module.exports = class TranscripticWidget extends Widget
@@ -16,7 +18,15 @@ module.exports = class TranscripticWidget extends Widget
 				w: w
 				h: h
 
-		@layers = [@measureAxisLayer]
+		xAxisCanvas = $('<canvas id="x-axis"></canvas>')
+		@$element.append xAxisCanvas
+		@xAxisLayer = new OrdinalAxisLayer
+			$canvas: xAxisCanvas
+			model: new LayerModel
+				w: w
+				h: h
+
+		@layers = [@measureAxisLayer, @xAxisLayer]
 		super
 
 	# Called by appView when dataManager gets data back
@@ -47,14 +57,20 @@ module.exports = class TranscripticWidget extends Widget
 		{groups, projections, resultsByWell} = results
 		fluorescense = projections[0] # will only have a single projection which is fluorescense
 		@model.fluorescenseScale = new LinearScale
-			domain: [fluorescense.range[0], fluorescense.range[1]]
+			domain: [fluorescense.domain[0], fluorescense.domain[1]]
 			range: [0, @model.plotHeight]
+
+		{name, domain} = results.groups[0] # cycle
+		@model.xAxisScale = new OrdinalScale
+			domain: domain
+			range: [0, @model.plotWidth]
 
 		super
 
 	updatesForChildren: ->
-		{fluorescenseScale, w, h, pad, plotHeight, plotWidth} = @model
+		{xAxisScale, fluorescenseScale, w, h, pad, plotHeight, plotWidth} = @model
 
 		[
 			[@measureAxisLayer, {scale: fluorescenseScale, w, h, pad, plotHeight, plotWidth}]
+			[@xAxisLayer, {scale: xAxisScale, w, h, pad, plotHeight, plotWidth}]
 		]

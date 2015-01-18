@@ -48,17 +48,17 @@ module.exports = class DataManager
 			groups: [
 
 					name: "cycle"
-					range: [1,40]
+					domain: [1..40]
 				,
 				
 					name: "well"
-					range: [1..384]
+					domain: [1..384]
 				
 			]
 
 			projections: [
 				name: "fluorescense"
-				range: [minFluor, maxFluor]
+				domain: [minFluor, maxFluor]
 			]
 
 			resultsByWell: resultsByWell
