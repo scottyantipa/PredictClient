@@ -4,8 +4,8 @@
   "data": {
     "calibration_data": [
       {
-        "dye": "SYBR",
-        "plate": "BR White", // does this mean it describes a single plate?
+        "dye": "SYBR", // The Fluor type
+        "plate": "BR White",
 
         // 2448 int values between 0 and 20k or so.  Only 6 unique values (each value repated 408 times)
         "dye80": [], 
@@ -29,11 +29,7 @@
         "blockTemp": 56.02000045776367, 
         
         // array of 6 arrays where each array is length 384 with values between 0 and 3k
-        // I assume each is a value for the Flour at a given temperature
-        // and that the temperature is associated with a cycle. Note that
-        // 2448 / 384 is aproximately 6
-        // and (2448 * 8) / 6 = 3264
-        "channelSeparatedData": [[]],
+        "{channelSeparatedData}": [[]],
       }
       // 100 more blockTemp objs here
       ], // end of plateread_data

@@ -1,7 +1,7 @@
 Layer = require '../layer'
 GroupModel = require '../../group/groupModel'
 Ticks = require '../../group/subclass/timeAxisTicksGroup'
-Labels = require '../../group/subclass/timeAxisLabelsGroup'
+Labels = require '../../group/subclass/labelsGroup'
 DateUtils = require '../../../util/dateUtils'
 Styling = require '../../util/styling'
 	
@@ -34,7 +34,7 @@ module.exports = class TimeAxisLayer extends Layer
 		{axisLabels, axisTicks} = @calcShapes()
 		{tx, ty} = @calcGroupPositions()
 		[
-			[@labelsGroup, {axisLabels, timeScale, tx, ty}]
+			[@labelsGroup, {labels: axisLabels, timeScale, tx, ty}]
 			[@ticksGroup, {axisTicks, timeScale, tx, ty, plotHeight}]
 		]
 

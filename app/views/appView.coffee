@@ -3,13 +3,13 @@ Top level app view
 ###
 DataManager = require '../data/dataManager'
 ChromeView = require './chromeView'
-ChartWidget = require '../canvas/widget/subclass/chartWidget'
+TranscripticWidget = require '../canvas/widget/subclass/transcripticWidget'
 WidgetModel = require '../canvas/widget/widgetModel'
 template = require './templates/appView'
 
 module.exports = class AppView extends Backbone.View
 	template: template
-	appTitle: "Predict"
+	appTitle: "Transcriptic"
 
 	initialize: ({@el}) ->
 		@render()
@@ -26,7 +26,7 @@ module.exports = class AppView extends Backbone.View
 
 		$chartContainer = @$('.visualization.container')
 		{w, h} = @sizeForChart()
-		@chartWidget = new ChartWidget
+		@chartWidget = new TranscripticWidget
 			$element: $chartContainer
 			delegate: @
 			model: new WidgetModel

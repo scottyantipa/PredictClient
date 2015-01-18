@@ -41,3 +41,25 @@ module.exports = class LinearScale
 	range: (@range) ->
 		@dy = Math.abs(@range[1] - @range[0])
 		@
+
+	ticks: (minGapInRange) ->
+		multiplier = 0
+		base = 10
+		foundExp = false
+		while not foundExp
+			multiplier++
+			x = base * multiplier
+			foundExp = Math.abs(@map(x) - @map(2 * x)) > minGapInRange
+
+		# now we have the multiple of 10 which nicely divides the domain
+		currentVal = @domain[0]
+		ticks = [currentVal] # always return the first (it should be 0)
+		stop = false
+		while (nextVal = currentVal + base*multiplier) < @range[1]
+			ticks.push nextVal
+			currentVal = nextVal
+
+		ticks
+
+
+

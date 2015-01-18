@@ -1,7 +1,5 @@
 Layer = require '../layer'
-TicksGroup = require '../../group/subclass/probabilityTicksGroup'
 TickLabelsGroup = require '../../group/subclass/tickLabelsGroup'
-GroupModel = require '../../group/groupModel'
 
 module.exports = class ProbabilityTicksLayer extends Layer
 	minDistanceBetweenLines: 50
@@ -22,7 +20,6 @@ module.exports = class ProbabilityTicksLayer extends Layer
 		bounds = 
 			left: timeScale.range[0]
 			right: timeScale.range[1]
-
 
 		# Create skeletons for the horizontal ticks
 		# to be used by the groups 

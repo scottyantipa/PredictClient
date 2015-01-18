@@ -3,7 +3,7 @@ Line = require '../../shape/subclass/line'
 LineModel = require '../../shape/subclass/lineModel'
 Styling = require '../../util/styling'
 
-module.exports = class TimeAxisLabelsGroup extends Group
+module.exports = class TimeAxisTicksGroup extends Group
 	VERT_AXIS_KEY: "timeAxisVerticalAxisKey"
 
 	updateModel: (options) ->

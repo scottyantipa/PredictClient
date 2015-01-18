@@ -15,16 +15,19 @@ postprocessed_data = DATA.data.postprocessed_data
 # console.log "baseline_subtracted ", postprocessed_data.amp0.SYBR.baseline_subtracted_curve_fit.length
 # console.log "baseline_subtracted[2].length ", postprocessed_data.amp0.SYBR.baseline_subtracted_curve_fit[2].length
 
-console.log "baseline_subtracted[383].length", postprocessed_data.amp0.SYBR.baseline_subtracted[383].length
+# console.log "baseline_subtracted[383].length", postprocessed_data.amp0.SYBR.baseline_subtracted[383].length
 
 printAllKeys = (obj) ->
 	if obj.constructor is Array
-		console.log "Arra length #{obj.length}"
+		# console.log "Arra length #{obj.length}"
 		for index, arrVal of obj
 			printAllKeys arrVal
 	else if typeof obj is "object"
 		for objKey, objVal of obj
 			console.log objKey
 			printAllKeys objVal
-
 # printAllKeys DATA
+
+for block in plateread_data
+	for category in block.channelSeparatedData
+		console.log category[1]

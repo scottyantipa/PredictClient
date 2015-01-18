@@ -19,3 +19,5 @@ exports.config =
     port: 3333
     base: '/'
     run: yes
+
+  sourceMaps: false

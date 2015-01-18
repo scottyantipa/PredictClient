@@ -3,92 +3,77 @@ Responsible for creating/getting/storing data
 ###
 
 module.exports = class DataManager
+	KEY_SEPARATOR: "|"
+	COLON: ":" # used in key formatting
+	NUM_COLUMNS: 24
+	NUM_ROWS: 16
 	state:
 		results: []
-		query: {}
-	
-	constructor: ->
-		@keyCounter = 1
-		@state.results = @createFakeData()
-
-	# Create fake predictions from random data
-	createFakeData: (random = true, numEvents = 20, start, end) ->
-		predictions = 
-			for i in [1..numEvents]
-				if random
-					date: @dateForPrediction(true, numEvents, start, end)
-					probability: Math.random() * 100
-					hot: Math.random() * 100
-					key: @keyCounter++
-
-				else
-					probabilityStep = 100 / numEvents
-
-					date: @dateForPrediction(false, numEvents, i, start, end)
-					probability: probabilityStep * i
-					hot: probabilityStep * i
-					key: @keyCounter++
-
-		@createConnections predictions
-		predictions
-
-	# Create the connections between predictions so
-	# we can draw lines between them
-	createConnections: (predictions) ->
-		numPredictions = predictions.length - 1
-		for prediction, index in predictions
-			continue if index % 2 is 0 # just do it for half of them
-			connection = predictions[Math.floor(Math.random() * numPredictions)] # grab a random one
-			if not connection
-				console.warn 'no connection'
-			prediction.connections = [connection.key]
-
-	dateForPrediction: (random = true, numEvents, i, start, end) ->
-		minDate = if start then start else new Date 2011, 1, 1
-		maxDate = if end then end else new Date 2011, 3, 1
-		epochDelta = (maxDate.getTime() - minDate.getTime()) * 5
-		epochStep = epochDelta / numEvents
-		probabilityStep = 100 / numEvents
-		if random
-			epoch = minDate.getTime() + Math.floor(epochDelta * Math.random())
-			adjustment = Math.floor(Math.random() * epochDelta)
-			if Math.random() < .5
-				epoch += adjustment
-			else
-				epoch -= adjustment
-			new Date epoch
-		else
-			new Date minDate.getTime() + (numEvents - i) * epochStep
-
-	addNewFakeData: ->
-		numExistingEvents = @state.results.length
-		newPredictions = @createFakeData true, 20
-		prediction.connections = null for prediction in newPredictions
-		@createConnections newPredictions
-		@state.results = @state.results.concat newPredictions
-
-	removeTopHalf: ->
-		newPredictions = _.filter @state.results, (result) ->
-			result.probability < 50
-		prediction.connections = null for prediction in newPredictions
-		@createConnections newPredictions
-		@state.results = newPredictions
-
-	updateBottomHalf: ->
-		results = @state.results
-		for result in results
-			continue if result.probability > 50
-			result.probability = 100 * Math.random()
-			result.hot = 100 * Math.random()
-		@state.results = results
-
-	createStandardOneYear: ->
-		@state.results = @createFakeData false, 20, new Date(2011, 0, 1), new Date(2012, 0, 1)
-
-	createStandardYearAndHalf: ->
-		@state.results = @createFakeData false, 20, new Date(2011, 0, 1), new Date(2012, 7, 1)
 
 	# just for resting
 	fetchAll: (callBack) ->
-		callBack()
+		$.ajax
+			type: "GET"
+			url: "./data/qpcr_example.json"
+			success: (results) =>
+				@parseResults results
+				callBack()
+			error: (results) ->
+				console.warn "error loading qpcr data: ", results
 
+	parseResults: (results) ->
+		plateread_data = results.data.plateread_data
+
+		# setup an object of results by wellKey
+		resultsByWell = {}
+		minFluor = 0
+		maxFluor = 0
+		for {channelSeparatedData}, cycle in plateread_data
+			break if cycle is 40
+			# for right now i'm only looking at the first of the 6 arrays
+			allWellDataPoints = channelSeparatedData[0]
+			
+			for row in [1..@NUM_ROWS]
+				for column in [1..@NUM_COLUMNS]
+					wellKey = @keyForWell row, column
+					wellResults = resultsByWell[wellKey] ?= [] # if this is the first data point for this well, we need to create the array
+					fluorescense = allWellDataPoints[@wellFlatIndex(row, column) - 1] # row/columns start at 1, so remove 1
+					if minFluor > fluorescense
+						minFluor = fluorescense
+					if maxFluor < fluorescense
+						maxFluor = fluorescense
+					wellResults.push {cycle, fluorescense}
+
+		@state.results =
+			groups: [
+
+					name: "cycle"
+					range: [1,40]
+				,
+				
+					name: "well"
+					range: [1..384]
+				
+			]
+
+			projections: [
+				name: "fluorescense"
+				range: [minFluor, maxFluor]
+			]
+
+			resultsByWell: resultsByWell
+
+
+	keyForWell: (row, column) ->
+		"row#{@COLON}#{row}#{@KEY_SEPARATOR}column#{@COLON}#{column}"
+
+	wellFromKey: (wellKey) ->
+		getNum = (str) => parseInt str.split(@COLON)[1]
+		[rowStr, columnStr] = wellKey.split @KEY_SEPARATOR
+		
+		row: getNum rowStr
+		column: getNum columnStr
+
+	# returns a number between 1 and the total number of wells
+	wellFlatIndex: (row, column) ->
+		(row - 1) * @NUM_COLUMNS + column
