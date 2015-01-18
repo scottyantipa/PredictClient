@@ -3,7 +3,7 @@
 # and handles basic tweening
 #
 
-Styling = '../../util/styling'
+Styling = require '../../util/styling'
 Group = require '../group'
 Text = require '../../shape/subclass/text'
 TextModel = require '../../shape/subclass/textModel'
@@ -16,14 +16,15 @@ module.exports = class LabelsGroup extends Group
 		@updateShapes newShapeModels
 
 	createNewShapes: ->
-		for {value, x, y} in @model.labels
+		for {data, value, x, y} in @model.labels
 			new TextModel
 				fontSize: 12
 				text: "#{value}"
 				y: y
 				x: x
-				key: value
+				key: "#{value}"
 				opacity: Styling.AXIS_LABEL_OPACITY
+				data: data
 
 	newShapeWithOptions: (options) ->
 		new Text options

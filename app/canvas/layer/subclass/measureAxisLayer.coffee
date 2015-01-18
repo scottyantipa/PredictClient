@@ -28,12 +28,16 @@ module.exports = class MeasureAxisLayer extends Layer
 	# and to not draw any of them to close together
 	calcLabels: ->
 		for tick in @model.scale.ticks @MIN_GAP_BETWEEN_LABELS
+			data: [
+				value: tick
+				name: "measure"
+			]
 			value: tick
 			y: @model.plotHeight - @model.scale.map tick
 			x: @model.scale.range[0] - 20
 
-	yValForShape: (shape, scale = @model.scale) ->
-		scale.map shape.value
+	yValForShape: (shapeModel, model = @model) ->
+		model.plotHeight - model.scale.map shapeModel.data[0].value
 
 # ----------------------------------------------
 # Special tweening for adding/removing shapes.  These functions
@@ -47,7 +51,7 @@ module.exports = class MeasureAxisLayer extends Layer
 		if oldScale = @previousModel?.scale # we can tween x position if theres an old time scale
 			propsToTween.push
 				propName: 'y'
-				startValue: @yValForShape shape.model, oldScale
+				startValue: @yValForShape shape.model, @previousModel
 				endValue: y
 
 		propsToTween.push
@@ -67,7 +71,7 @@ module.exports = class MeasureAxisLayer extends Layer
 			propsToTween.push
 				propName: 'y'
 				startValue: y
-				endValue: @yValForShape(shape.model, scale)
+				endValue: @yValForShape shape.model, @model
 		
 		propsToTween.push
 			propName: 'opacity'

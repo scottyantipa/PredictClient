@@ -38,7 +38,7 @@ module.exports = class OrdinalAxisLayer extends Layer
 		{tx, ty}
 
 	xValForShape: (shape, scale = @model.scale) ->
-		scale.map shape.value
+		scale.map shape.x
 
 # ----------------------------------------------
 # Special tweening for adding/removing shapes.  These functions

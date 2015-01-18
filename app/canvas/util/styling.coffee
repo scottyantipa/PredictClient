@@ -3,7 +3,7 @@ module.exports = class CanvasStyling
 	# Color
 	@CHART_LINES_FILL: "#C4C2C2"
 	@CONNECTING_PREDICTION_LINES: "#3079F0"
-	@AXIS_LABEL_OPACITY: .5
+	@AXIS_LABEL_OPACITY: .8
 
 	# Shapes
 	@MIN_RADIUS: 2
@@ -14,4 +14,4 @@ module.exports = class CanvasStyling
 	@CHART_PAD = 80
 
 	# Animation
-	@DEFAULT_ANIMATION_DURATION: 750
+	@DEFAULT_ANIMATION_DURATION: 500
