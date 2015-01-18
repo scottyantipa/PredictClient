@@ -1,0 +1,174 @@
+{
+  "id": "d1pbmwuph9k66",
+  "data_type": "qpcr",
+  "data": {
+    "calibration_data": [
+      {
+        "dye": "SYBR",
+        "plate": "BR White", // does this mean it describes a single plate?
+
+        // 2448 int values between 0 and 20k or so.  Only 6 unique values (each value repated 408 times)
+        "dye80": [], 
+        "dye60": [],
+        "dye40": [],
+        "dye20": [],
+        "empty80": [],
+        "empty60": [],
+        "empty40": [],
+        "empty20": [],
+      }
+     ], // end of calibration_data
+
+     // 101 length array of a bunch of "blockTemp" objects like one below
+     // 
+     "plateread_data": [ 
+      {
+        
+        // I assume temperature of plate for a given cycle
+        // This value increases over the 101 objects from around 55 to 94.38
+        "blockTemp": 56.02000045776367, 
+        
+        // array of 6 arrays where each array is length 384 with values between 0 and 3k
+        // I assume each is a value for the Flour at a given temperature
+        // and that the temperature is associated with a cycle. Note that
+        // 2448 / 384 is aproximately 6
+        // and (2448 * 8) / 6 = 3264
+        "channelSeparatedData": [[]],
+      }
+      // 100 more blockTemp objs here
+      ], // end of plateread_data
+
+      // array of array where inner array is [0..39]
+      // I guess this indexes the cycles (40 total)
+	"amp_grouped_read_indices": [[]],
+
+    "melting": {
+      "start_temp": "65.0:celsius", // temperature/cycle at which melting begins?
+      "increment": "0.5:celsius",
+      "melt_read_indices": [] // array [40..100]
+	},
+
+    "postprocessed_data": {
+      "amp0": {
+        "SYBR": {
+          "group_threshold": 10.36691551335399,
+
+          // Array of 384 arrays where each array is of length 40
+          // and contains values somewhere between -100 and +1000
+          // I'm going to guess that this is data for each of hte 384 wells
+          // for some kind of derivative value at each cycle
+          "baseline_subtracted_curve_fit": [[]],
+          "cts": {
+            "73": 4.764209249123623,
+            "313": 2.0457039100329966,
+            "49": 6.8245751240621475,
+            "25": 6.325126480862957,
+            "365": 4.797422448759801,
+            "29": 0.10342872414835858,
+            "28": 1.988100258484576
+          },
+
+          // Array of 384 arrays with each array of length 40
+          // with each value between -100 and +1000 about
+          "baseline_subtracted": [[]],
+         },
+      }
+    },
+
+  "parameters": {
+  },
+  "metadata": {
+  },
+  "attachments": [
+
+  ],
+  "warp": {
+    "id": "w1pbkxbfnf94u",
+    "command": {
+      "name": "Thermocycler.Thermocycle",
+      "groups": [
+        {
+          "cycles": 1,
+          "steps": [
+            {
+              "duration": "120000.0:millisecond",
+              "temperature": "95.0:celsius"
+            }
+          ]
+        },
+        {
+          "cycles": 40,
+          "steps": [
+            {
+              "duration": "5000.0:millisecond",
+              "temperature": "95.0:celsius"
+            },
+            {
+              "duration": "15000.0:millisecond",
+              "temperature": "56.0:celsius",
+              "read": true
+            }
+          ]
+        }
+      ],
+      "volume": "1.0E-8:meter^3",
+      "dyes": [
+        "SYBR"
+      ],
+      "melting": {
+        "start": "65.0:celsius",
+        "end": "95.0:celsius",
+        "increment": "0.5:celsius",
+        "rate": "5000.0:millisecond"
+      }
+    },
+    "state": "Completed"
+  },
+  "instruction": {
+    "id": "i174e79uftfjr",
+    "operation": {
+      "dataref": "OMG_QPCR_DATA_WOOOOOOOOOOOOO",
+      "melting": {
+        "start": "65:celsius",
+        "rate": "5:second",
+        "end": "95:celsius",
+        "increment": "0.5:celsius"
+      },
+      "object": "some_qpcr_plate",
+      "groups": [
+        {
+          "cycles": 1,
+          "steps": [
+            {
+              "duration": "120:second",
+              "temperature": "95:celsius"
+            }
+          ]
+        },
+        {
+          "cycles": 40,
+          "steps": [
+            {
+              "duration": "5:second",
+              "temperature": "95:celsius"
+            },
+            {
+              "duration": "15:second",
+              "read": true,
+              "temperature": "56:celsius"
+            }
+          ]
+        }
+      ],
+      "dyes": [
+        "SYBR"
+      ],
+      "op": "thermocycle"
+    },
+    "completed_at": "2014-11-12T16:33:35.152-08:00",
+    "executed_at": "2014-11-12T14:21:51.929-08:00"
+  }
+}
+
+
+
