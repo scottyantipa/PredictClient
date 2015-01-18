@@ -1,7 +1,7 @@
 {
-  "name": "your-app",
-  "description": "Description",
-  "author": "Your Name",
+  "name": "Transcriptic",
+  "description": "qpcr data viz",
+  "author": "Scott Antipa",
   "version": "0.0.1",
   "repository": "",
   "scripts": {
@@ -18,6 +18,7 @@
     "handlebars-brunch": "~1.7.0",
     "jade-brunch": "latest",
     "express": "3.x",
+    "auto-reload-brunch": "1.7.5",
     "mongodb": "1.x",
     "mongoose": "3.8.x"
   }

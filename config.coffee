@@ -20,4 +20,13 @@ exports.config =
     base: '/'
     run: yes
 
+  plugins:
+    autoReload:
+      enabled:
+        css: on
+        js: on
+        assets: off
+       port: [1234, 2345, 3456]
+      delay: 200 if require('os').platform() is 'win32'
+
   sourceMaps: false
