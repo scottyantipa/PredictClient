@@ -42,22 +42,27 @@ module.exports = class LinearScale
 		@dy = Math.abs(@range[1] - @range[0])
 		@
 
+	# This will return an array of domain values
+	# which when mapped are all at least minGapInRange apart
+	# This useful for rendering labels on an axis
+	# TODO: right now it just finds a good multiple of 10, but
+	# instead it should smartly find nice even values like 250, 500, 1000, ...
 	ticks: (minGapInRange) ->
 		multiplier = 0
 		base = 10
 		foundExp = false
 		while not foundExp
 			multiplier++
-			x = base * multiplier
-			foundExp = Math.abs(@map(x) - @map(2 * x)) > minGapInRange
+			currentDomainGap = base * multiplier
+			foundExp = Math.abs(@map(currentDomainGap)) > minGapInRange
 
 		# now we have the multiple of 10 which nicely divides the domain
 		currentVal = @domain[0]
-		ticks = [currentVal] # always return the first (it should be 0)
+		ticks = [] # always return the first (it should be 0)
 		stop = false
-		while (nextVal = currentVal + base*multiplier) < @range[1]
-			ticks.push nextVal
-			currentVal = nextVal
+		while currentVal < @domain[1]
+			ticks.push currentVal
+			currentVal = currentVal + base*multiplier
 
 		ticks
 

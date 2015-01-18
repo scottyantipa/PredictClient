@@ -19,7 +19,6 @@ module.exports = class MeasureAxisLayer extends Layer
 		{top, left} = pad
 		tx = left
 		ty = top
-
 		labels = @calcLabels()
 		[
 			[@labelsGroup, {labels, tx, ty}]
@@ -44,16 +43,12 @@ module.exports = class MeasureAxisLayer extends Layer
 		propsToTween = [] # figure out what we can tween and put it in here
 		{opacity, y} = shape.model
 
-		startY = 
-			if oldScale = @previousModel?.scale # we can tween x position if theres an old time scale
-				@getY shape.model, oldScale
-			else
-				0 # tween from bottom if there is no old scale
 
-		propsToTween.push
-			propName: 'y'
-			startValue: startY
-			endValue: y
+		if oldScale = @previousModel?.scale # we can tween x position if theres an old time scale
+			propsToTween.push
+				propName: 'y'
+				startValue: @yValForShape shape.model, oldScale
+				endValue: y
 
 		propsToTween.push
 			propName: 'opacity'
@@ -72,7 +67,7 @@ module.exports = class MeasureAxisLayer extends Layer
 			propsToTween.push
 				propName: 'y'
 				startValue: y
-				endValue: @getY(shape.model, scale)
+				endValue: @yValForShape(shape.model, scale)
 		
 		propsToTween.push
 			propName: 'opacity'

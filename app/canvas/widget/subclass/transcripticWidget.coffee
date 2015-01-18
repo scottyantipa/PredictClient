@@ -49,6 +49,7 @@ module.exports = class TranscripticWidget extends Widget
 		@model.fluorescenseScale = new LinearScale
 			domain: [fluorescense.range[0], fluorescense.range[1]]
 			range: [0, @model.plotHeight]
+
 		super
 
 	updatesForChildren: ->
