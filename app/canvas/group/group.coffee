@@ -12,6 +12,7 @@ module.exports = class Group extends BaseCanvasView
 		if not @model then @model = new GroupModel
 
 	draw: (ctx) ->
+		# startDraw = new Date()
 		for shape in @shapes
 			ctx.save()
 			if shape.model.tx or shape.model.ty	
@@ -19,6 +20,7 @@ module.exports = class Group extends BaseCanvasView
 			shape.draw(ctx)
 			ctx.restore()
 		@needsRedraw = false
+		# console.log "group draw in", (new Date).getTime() - startDraw.getTime() 
 #
 # Click handling
 #
@@ -118,7 +120,7 @@ module.exports = class Group extends BaseCanvasView
 		shape = @newShapeWithOptions options
 		@shapes.push shape
 		tweenMap = @tweenMapForAddShape shape
-		@tweener.registerObjectToTween(tweenMap) if @tweenMapForAddShape
+		@tweener.registerObjectToTween(tweenMap) if tweenMap
 		return
 
 	removeShape: (shape) =>

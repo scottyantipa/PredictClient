@@ -16,8 +16,14 @@ module.exports = class OrdinalScale extends LinearScale
 	computeDX: ->
 		@dx = @domain.length
 
-	map: (x) ->
-		@k * @positionInDomain(x) + @b
+	# For example, if this is an ordinal scale of natural numbers,
+	# we can pass it a real number and we will still map it properly (rather than place
+	# it at beginning or end like we would with linearly = false)
+	map: (x, linearly = false) ->
+		if linearly
+			super
+		else
+			@k * @positionInDomain(x) + @b
 
 	# Different from index in that position can be negative
 	# if the x value passed is not in @domain and is less than all values

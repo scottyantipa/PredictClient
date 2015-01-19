@@ -29,12 +29,10 @@ module.exports = class OrdinalAxisLayer extends Layer
 			x: @model.scale.map tick
 
 	calcGroupPositions: ->
-		{scale, w, h, pad, plotHeight, plotWidth} = @model
+		{pad, plotHeight} = @model
 		{top, left} = pad
 		tx = left
 		ty = plotHeight + top + Styling.MAX_RADIUS
-		w = plotWidth
-		h = plotHeight
 		{tx, ty}
 
 	xValForShape: (shape, scale = @model.scale) ->
@@ -48,12 +46,20 @@ module.exports = class OrdinalAxisLayer extends Layer
 		propsToTween = [] # figure out what we can tween and put it in here
 		{opacity, x} = shape.model
 
+		hasOldScale = false
+		startValue =
+			if oldScale = @previousModel?.scale # we can tween x position if theres an old time scale
+				hasOldScale = true
+				@xValForShape shape.model, oldScale
+			else
+				@model.scale.range[0]
 
-		if oldScale = @previousModel?.scale # we can tween x position if theres an old time scale
-			propsToTween.push
-				propName: 'x'
-				startValue: @xValForShape shape.model, oldScale
-				endValue: x
+
+		propsToTween.push
+			propName: 'x'
+			startValue: startValue
+			endValue: x
+			duration: if hasOldScale then Styling.DEFAULT_ANIMATION_DURATION else Styling.QUICK_ANIMATION_DURATION
 
 		propsToTween.push
 			propName: 'opacity'

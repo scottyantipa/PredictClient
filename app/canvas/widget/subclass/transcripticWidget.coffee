@@ -1,6 +1,7 @@
 Widget = require '../widget'
 MeasureAxisLayer = require '../../layer/subclass/measureAxisLayer'
 OrdinalAxisLayer = require '../../layer/subclass/ordinalAxisLayer'
+qpcrLinesLayer = require '../../layer/subclass/qpcrLinesLayer'
 LayerModel = require '../../layer/layerModel'
 LinearScale = require '../../util/linearScale'
 OrdinalScale = require '../../util/ordinalScale'
@@ -26,7 +27,15 @@ module.exports = class TranscripticWidget extends Widget
 				w: w
 				h: h
 
-		@layers = [@measureAxisLayer, @xAxisLayer]
+		linesCanvas = $('<canvas id="lines"></canvas>')
+		@$element.append linesCanvas
+		@qpcrLinesLayer = new qpcrLinesLayer
+			$canvas: linesCanvas
+			model: new LayerModel
+				w: w
+				h: h
+
+		@layers = [@measureAxisLayer, @xAxisLayer, @qpcrLinesLayer]
 		super
 
 	# Called by appView when dataManager gets data back
@@ -71,6 +80,41 @@ module.exports = class TranscripticWidget extends Widget
 		{xAxisScale, fluorescenseScale, w, h, pad, plotHeight, plotWidth} = @model
 
 		[
-			[@measureAxisLayer, {scale: fluorescenseScale, w, h, pad, plotHeight, plotWidth}]
-			[@xAxisLayer, {scale: xAxisScale, w, h, pad, plotHeight, plotWidth}]
+			[
+				@measureAxisLayer
+				{
+					scale: fluorescenseScale
+					w
+					h
+					pad
+					plotHeight
+					plotWidth
+				}
+			]
+
+			[
+				@xAxisLayer
+				{
+					scale: xAxisScale
+					w
+					h
+					pad
+					plotHeight
+					plotWidth
+				}
+			]
+
+			[
+				@qpcrLinesLayer
+				{
+					resultsByWell: @delegate.state().results.resultsByWell
+					cycleScale: xAxisScale
+					fluorescenseScale: fluorescenseScale
+					w
+					h
+					pad
+					plotHeight
+					plotWidth
+				}
+			]
 		]

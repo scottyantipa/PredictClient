@@ -305,7 +305,7 @@ module.exports = class TimeAxisLayer extends Layer
 	getX: (shape, timeScale = @model.timeScale) ->
 		isLabel = @typeOfShapeFromKey(shape.key) is 'tick'
 		if isLabel
-			{key, row, numRows, date, grain, textWidth} = shape
+			{row, numRows, date, grain, textWidth} = shape
 			epoch = date.getTime()
 			if row is numRows
 				timeScale.map(epoch) + 5 # some padding

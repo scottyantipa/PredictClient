@@ -1,5 +1,6 @@
 Layer = require '../layer'
 Labels = require '../../group/subclass/labelsGroup'
+Styling = require '../../util/styling'
 
 module.exports = class MeasureAxisLayer extends Layer
 	MIN_GAP_BETWEEN_LABELS: 50
@@ -34,7 +35,7 @@ module.exports = class MeasureAxisLayer extends Layer
 			]
 			value: tick
 			y: @model.plotHeight - @model.scale.map tick
-			x: @model.scale.range[0] - 20
+			x: @model.scale.range[0] - 60
 
 	yValForShape: (shapeModel, model = @model) ->
 		model.plotHeight - model.scale.map shapeModel.data[0].value
@@ -48,11 +49,20 @@ module.exports = class MeasureAxisLayer extends Layer
 		{opacity, y} = shape.model
 
 
-		if oldScale = @previousModel?.scale # we can tween x position if theres an old time scale
-			propsToTween.push
-				propName: 'y'
-				startValue: @yValForShape shape.model, @previousModel
-				endValue: y
+		hasOldScale = false
+		startValue =
+			if oldScale = @previousModel?.scale # we can tween x position if theres an old time scale
+				hasOldScale = true
+				@yValForShape shape.model, @previousModel
+			else
+				# Take the first value from domain and animate everything from there
+				@model.plotHeight - @model.scale.map(@model.scale.domain[0])
+
+		propsToTween.push
+			propName: 'y'
+			startValue: startValue
+			endValue: y
+			duration: if hasOldScale then Styling.DEFAULT_ANIMATION_DURATION else Styling.QUICK_ANIMATION_DURATION
 
 		propsToTween.push
 			propName: 'opacity'

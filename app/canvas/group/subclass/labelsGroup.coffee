@@ -12,8 +12,7 @@ module.exports = class LabelsGroup extends Group
 
 	updateModel: (options) ->
 		super
-		newShapeModels = @createNewShapes()
-		@updateShapes newShapeModels
+		@updateShapes @createNewShapes()
 
 	createNewShapes: ->
 		for {data, value, x, y} in @model.labels
