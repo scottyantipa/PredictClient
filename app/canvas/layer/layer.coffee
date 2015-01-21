@@ -43,8 +43,8 @@ module.exports = class Layer extends BaseCanvasView
 
 	setCanvasSize: ->
 		{w, h} = @model
-		@$canvas.attr 'width', w
-		@$canvas.attr 'height', h
+		@$canvas.attr 'width', w + "px"
+		@$canvas.attr 'height', h + "px"
 
 	children: ->
 		@groups

@@ -9,8 +9,8 @@ module.exports = class Widget extends BaseCanvasView
 	# Call super in subclass
 	constructor: ({@model, @$element, @delegate}) ->
 		{h, w} = @model
-		@$element.css 'width', w
-		@$element.css 'height', h
+		@$element.attr 'width', w
+		@$element.attr 'height', h
 
 		@$element
 			.click((e) => @onClick(e))

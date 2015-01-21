@@ -55,8 +55,8 @@ module.exports = class ChartWidget extends Widget
 	updateModel: ->
 		# size our div container
 		{w, h} = @model
-		@$element.css 'width', w
-		@$element.css 'height', h
+		@$element.attr 'width', w
+		@$element.attr 'height', h
 
 		state = @delegate.state() # this won't work with multiple chart widgets
 		

@@ -5,10 +5,14 @@ module.exports = class Polygon extends Shape
 	draw: (ctx) ->
 		super ctx
 		# because canvas draws at .5 pixel, we want it to land directly on a a pixel
+		ctx.beginPath()
 		offset = if @model.lineWidth % 2 then 0.5 else 0 # not using this right now
 		points = @model.bezierPoints
+
 		for [x,y], i in points
 			break if i is points.length - 1
+			x = Math.round(x) + 0.5
+			y = Math.round(y) + 0.5
 			if i is 0
 				ctx.moveTo x,y
 			else if i is points.length - 2
@@ -18,7 +22,8 @@ module.exports = class Polygon extends Shape
 				yCenter = (points[i][1] + points[i + 1][1]) / 2
 				ctx.quadraticCurveTo points[i][0], points[i][1], xCenter, yCenter
 
-		ctx.closePath() if @model.closePath
 		ctx.stroke()
+		ctx.closePath() if @model.closePath
+		
 
 

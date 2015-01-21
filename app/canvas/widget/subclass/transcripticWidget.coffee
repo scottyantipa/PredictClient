@@ -46,8 +46,8 @@ module.exports = class TranscripticWidget extends Widget
 	updateModel: ->
 		# size our div container
 		{w, h} = @model
-		@$element.css 'width', w
-		@$element.css 'height', h
+		# @$element.attr 'width', w
+		# @$element.attr 'height', h
 
 		# Calculate where the axis should be placed
 		pad = Styling.CHART_PAD
@@ -81,7 +81,7 @@ module.exports = class TranscripticWidget extends Widget
 		for wellKey, results of resultsByWell
 			numWellsModeled++
 			# For debugging we can draw less lines
-			# break if numWellsModeled > 250
+			break if numWellsModeled is 50
 			allPoints =
 				for {cycle, fluorescense} in results
 					[cycle, fluorescense]
