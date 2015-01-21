@@ -54,7 +54,6 @@ module.exports = class OrdinalAxisLayer extends Layer
 			else
 				@model.scale.range[0]
 
-
 		propsToTween.push
 			propName: 'x'
 			startValue: startValue

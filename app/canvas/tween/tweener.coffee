@@ -65,6 +65,7 @@ module.exports = class Tweener
 	processFrame: =>
 		now = new Date().getTime()
 		for tween in @registeredTweens
+			# debugger
 			{objToTween, propsToTween, startTime} = tween
 			continue if startTime > now
 

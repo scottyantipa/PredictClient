@@ -10,7 +10,7 @@ module.exports = class qpcrLinesLayer extends Layer
 		super
 
 	updatesForChildren: ->
-		{pad} = @model
+		{pad, bezierPointsByWellKey} = @model
 		{tx, ty} = @calcGroupPositions()
 		[
 			[
@@ -18,9 +18,7 @@ module.exports = class qpcrLinesLayer extends Layer
 				{
 					tx
 					ty
-					resultsByWell: @model.resultsByWell
-					cycleScale: @model.cycleScale
-					fluorescenseScale: @model.fluorescenseScale
+					bezierPointsByWellKey
 				}
 			]
 		]
