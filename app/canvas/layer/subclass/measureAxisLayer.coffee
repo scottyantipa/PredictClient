@@ -58,16 +58,19 @@ module.exports = class MeasureAxisLayer extends Layer
 				# Take the first value from domain and animate everything from there
 				@model.plotHeight - @model.scale.map(@model.scale.domain[0])
 
+		duration = Styling.DEFAULT_ANIMATION_DURATION
+
 		propsToTween.push
 			propName: 'y'
 			startValue: startValue
 			endValue: y
-			duration: if hasOldScale then Styling.DEFAULT_ANIMATION_DURATION else Styling.QUICK_ANIMATION_DURATION
+			duration: duration
 
 		propsToTween.push
 			propName: 'opacity'
 			startValue: 0
 			endValue: opacity
+			duration: duration
 		
 		objToTween: shape.model
 		propsToTween: propsToTween

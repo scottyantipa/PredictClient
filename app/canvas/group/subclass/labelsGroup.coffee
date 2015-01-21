@@ -22,7 +22,7 @@ module.exports = class LabelsGroup extends Group
 				y: y
 				x: x
 				key: "#{value}"
-				opacity: Styling.AXIS_LABEL_OPACITY
+				opacity: 1#Styling.AXIS_LABEL_OPACITY
 				data: data
 
 	newShapeWithOptions: (options) ->

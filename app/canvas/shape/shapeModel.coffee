@@ -3,13 +3,13 @@ baseCanvasModel = require '../base/baseCanvasModel'
 module.exports = class ShapeModel extends baseCanvasModel
 	# Styling
 	type: "shape"
-	fill: null
+	fill: "#000"
 	opacity: 1
 	tx: 0
 	ty: 0
 	lineWidth: 1
 	fontSize: 12
-	stroke: "#FFFFFF"
+	stroke: "#000"
 
 	# Group it belongs to
 	group: null

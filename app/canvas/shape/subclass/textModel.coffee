@@ -6,4 +6,4 @@ module.exports = class TextModel extends ShapeModel
 	text: null
 	x: null
 	y: null
-	fill: Styling.CHART_LINES_FILL
+	# fill: Styling.CHART_LINES_FILL

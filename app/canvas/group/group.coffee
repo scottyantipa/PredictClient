@@ -12,7 +12,7 @@ module.exports = class Group extends BaseCanvasView
 		if not @model then @model = new GroupModel
 
 	draw: (ctx) ->
-		# startDraw = new Date()
+		startDraw = new Date()
 		for shape in @shapes
 			ctx.save()
 			if shape.model.tx or shape.model.ty	
@@ -20,7 +20,6 @@ module.exports = class Group extends BaseCanvasView
 			shape.draw(ctx)
 			ctx.restore()
 		@needsRedraw = false
-		# console.log "group draw in", (new Date).getTime() - startDraw.getTime() 
 #
 # Click handling
 #
@@ -79,14 +78,33 @@ module.exports = class Group extends BaseCanvasView
 			remove.push oldShapesByKey[key] 
 		
 		# Handle the update/insert/remove
-		for newModel in update
-			@updateShapeForNewModel newModel
-		for newModel in insert
-			@insertShapeWithOptions 
-				model: newModel
-				delegate: @
-		for oldShape in remove
-			@removeShape oldShape
+		tweensForUpdate =
+			for newModel in update
+				if not tweenMap = @updateShapeForNewModel(newModel)
+					continue
+				else
+					tweenMap
+
+		tweensForAdd =
+			for newModel in insert
+				if not tweenMap = @insertShapeWithOptions {model: newModel, delegate: @}
+					continue
+				else 
+					tweenMap
+
+		tweensForRemove =
+			for oldShape in remove
+				if not tweenMap = @removeShape oldShape
+					continue
+				else
+					tweenMap
+
+
+		@tweener.registerObjectsToTween(
+			tweensForUpdate
+			.concat tweensForAdd
+			.concat tweensForRemove
+		)
 
 	# Figure out how the old and new model are different
 	# and register those diffs with the tweener
@@ -113,19 +131,18 @@ module.exports = class Group extends BaseCanvasView
 				tweenMap.propsToTween.push propertyToTween
 
 		if needToTween
-			@tweener.registerObjectToTween(tweenMap)
+			tweenMap
+		else
+			null
 
 	# override with a specific shape
 	insertShapeWithOptions: (options) ->
 		shape = @newShapeWithOptions options
 		@shapes.push shape
-		tweenMap = @tweenMapForAddShape shape
-		@tweener.registerObjectToTween(tweenMap) if tweenMap
-		return
+		@tweenMapForAddShape shape
 
 	removeShape: (shape) =>
-		tweenMap = @tweenMapForRemoveShape shape
-		@tweener.registerObjectToTween(tweenMap) if tweenMap
+		@tweenMapForRemoveShape shape
 
 	###
 	Default tweening for adding/removing shapes just fades opacity

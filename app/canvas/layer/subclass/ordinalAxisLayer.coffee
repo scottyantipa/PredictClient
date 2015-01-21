@@ -53,17 +53,18 @@ module.exports = class OrdinalAxisLayer extends Layer
 				@xValForShape shape.model, oldScale
 			else
 				@model.scale.range[0]
-
+		duration = Styling.DEFAULT_ANIMATION_DURATION
 		propsToTween.push
 			propName: 'x'
 			startValue: startValue
 			endValue: x
-			duration: if hasOldScale then Styling.DEFAULT_ANIMATION_DURATION else Styling.QUICK_ANIMATION_DURATION
+			duration: duration
 
 		propsToTween.push
 			propName: 'opacity'
 			startValue: 0
 			endValue: opacity
+			duration: duration
 		
 		objToTween: shape.model
 		propsToTween: propsToTween

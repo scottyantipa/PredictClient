@@ -5,7 +5,7 @@ module.exports = class Polygon extends Shape
 	draw: (ctx) ->
 		super ctx
 		# because canvas draws at .5 pixel, we want it to land directly on a a pixel
-		offset = if @model.lineWidth % 2 then 0.5 else 0
+		offset = if @model.lineWidth % 2 then 0.5 else 0 # not using this right now
 		points = @model.bezierPoints
 		for [x,y], i in points
 			break if i is points.length - 1

@@ -48,15 +48,18 @@ module.exports = class Tweener
 		]
 		
 	###
-	registerObjectToTween: (tween) =>
+	registerObjectsToTween: (tweens) =>
+		for tween in tweens
+			@prepareTweenForTweening tween
+		@registeredTweens = @registeredTweens.concat tweens
+
+	prepareTweenForTweening: (tween) =>
 		tween.tweenKey ?= "tweenKey:#{@keyCounter++}"
 		tween.duration ?= Styling.DEFAULT_ANIMATION_DURATION # dont need to pass a duration if you dont care
 		# Make sure each property to tween has a duration
 		for propertyToTween in tween.propsToTween
 			propertyToTween.duration ?= tween.duration
 		tween.startTime ?= new Date().getTime()
-		@registeredTweens.push tween
-
 
 	# Each tween in @registeredTweens can change one or man properties of the given object
 	# The tween may have a duration, startTime, etc. and the individual tweens within it can override those
@@ -74,7 +77,9 @@ module.exports = class Tweener
 			# e.g. duration, startTime, tweenFct, etc.
 			for propertyToTween, index in propsToTween
 				{propName, startValue, endValue, completed, duration} = propertyToTween
-				continue if startValue is endValue or completed
+				completed = startValue is endValue
+				if completed
+					propertyToTween.completed = completed
 				
 				# override the props of the group
 				startTime = propertyToTween.startTime or startTime
@@ -85,6 +90,7 @@ module.exports = class Tweener
 				if x > 1 then x = 1 # to be safe
 				if x < 0 then x = 0
 				if x is 1
+					objToTween[propName] = endValue
 					propertyToTween.completed = true
 					continue
 				x = tweenFct x

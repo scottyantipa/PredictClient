@@ -1,6 +1,11 @@
 ###
 Top level app view
+
+TODO: A lot of the logic for setting up layers and canvases should
+be abstracted so the dev-user doesnt have to insert canvas into Dom, etc.
 ###
+
+
 DataManager = require '../data/dataManager'
 ChromeView = require './chromeView'
 TranscripticWidget = require '../canvas/widget/subclass/transcripticWidget'
