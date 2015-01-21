@@ -38,7 +38,7 @@ module.exports = class DataManager
 					wellKey = @keyForWell row, column
 					wellResults = resultsByWell[wellKey] ?= [] # if this is the first data point for this well, we need to create the array
 					fluorescense = allWellDataPoints[@wellFlatIndex(row, column) - 1] # row/columns start at 1, so remove 1
-					fluorescense = Math.pow fluorescense, 2
+					# fluorescense = Math.pow fluorescense, 2
 					if minFluor > fluorescense
 						minFluor = fluorescense
 					if maxFluor < fluorescense

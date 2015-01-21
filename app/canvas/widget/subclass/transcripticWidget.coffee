@@ -81,7 +81,7 @@ module.exports = class TranscripticWidget extends Widget
 		for wellKey, results of resultsByWell
 			numWellsModeled++
 			# For debugging we can draw less lines
-			break if numWellsModeled is 50
+			# break if numWellsModeled is 50
 			allPoints =
 				for {cycle, fluorescense} in results
 					[cycle, fluorescense]
