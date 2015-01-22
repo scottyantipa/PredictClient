@@ -10,7 +10,6 @@ module.exports = class Layer extends BaseCanvasView
 	groups: null
 	model: null # LayerModel
 	ctx: null # a canvas context
-	pixelRatio: 1 # for canvas element 
 
 	constructor: ({@$canvas, @model}) ->
 		@ctx = @$canvas[0].getContext "2d"
@@ -21,6 +20,10 @@ module.exports = class Layer extends BaseCanvasView
 		@tweener = new Tweener @draw
 		for group in @groups
 			group.tweener = @tweener
+
+	# After a render, subclass can call super to get a draw
+	render: ->
+		@draw()
 
 	# Called by Tweener so fat arrow
 	draw: =>
@@ -42,9 +45,9 @@ module.exports = class Layer extends BaseCanvasView
 			@ctx.restore()
 
 	setCanvasSize: ->
+		ratio = devicePixelRatio or 1
 		{w, h} = @model
-		@$canvas.attr 'width', w + "px"
-		@$canvas.attr 'height', h + "px"
+		@$canvas.attr 'width', w*ratio + "px"
+		@$canvas.attr 'height', h*ratio + "px"
 
-	children: ->
-		@groups
+	children: -> @groups

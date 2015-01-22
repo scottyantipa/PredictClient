@@ -1,3 +1,4 @@
+Koolaid = require '../../koolaid'
 Layer = require '../layer'
 qpcrLinesGroup = require '../../group/subclass/qpcrLinesGroup'
 Styling = require '../../util/styling'
@@ -9,23 +10,24 @@ module.exports = class qpcrLinesLayer extends Layer
 		@groups = [@qpcrLinesGroup]
 		super
 
-	updatesForChildren: ->
-		{pad, bezierPointsByWellKey} = @model
+	render: ->
+		{pad, bezierPointsByWellKey, stroke, lineWidth} = @model
 		{tx, ty} = @calcGroupPositions()
-		[
+		Koolaid.renderChildren [
 			[
 				@qpcrLinesGroup
 				{
 					tx
 					ty
 					bezierPointsByWellKey
+					stroke
 				}
 			]
 		]
+		super
 
 	calcGroupPositions: ->
 		{pad, plotHeight} = @model
-		{top, left} = pad
-		tx = left
-		ty = plotHeight + top + Styling.MAX_RADIUS
+		tx = pad
+		ty = plotHeight + pad + Styling.MAX_RADIUS
 		{tx, ty}

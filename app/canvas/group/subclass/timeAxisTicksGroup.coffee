@@ -6,8 +6,7 @@ Styling = require '../../util/styling'
 module.exports = class TimeAxisTicksGroup extends Group
 	VERT_AXIS_KEY: "timeAxisVerticalAxisKey"
 
-	updateModel: (options) ->
-		super
+	render: (options) ->
 		newShapeModels = @createNewShapes()
 		@updateShapes newShapeModels
 

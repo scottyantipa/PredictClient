@@ -28,7 +28,7 @@ module.exports = class TimeAxisLayer extends Layer
 
 	# Calculate the labels and tick marks for the time axis
 	# pass these models down to the groups
-	# We dont implement an updateModel here because it doesn't need to alter its own model, just the children
+	# We dont implement an render here because it doesn't need to alter its own model, just the children
 	updatesForChildren: ->
 		{plotHeight, plotWidth, timeScale} = @model
 		{axisLabels, axisTicks} = @calcShapes()

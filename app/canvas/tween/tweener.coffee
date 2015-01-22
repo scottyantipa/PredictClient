@@ -111,6 +111,7 @@ module.exports = class Tweener
 			# This obj could be a shape, a group, a layer
 			# So set the flag that it needs to be redrawn (whatever that means)
 			objToTween.needsRedraw = true
+			processedFrame = true
 
 		# alert tween delegates when tween has finished (like group gets notified if shape is done tweening)
 		# and filter down list of tweens to just the incomplete ones
@@ -118,7 +119,7 @@ module.exports = class Tweener
 			if tween.completed then tween.delegate.didFinishTween tween
 			not tween.completed
 
-		@afterTweenFct() # e.g. for a widget this runs draw() on the canvases
+		@afterTweenFct() if processedFrame # e.g. for a widget this runs draw() on the canvases
 				
 		requestAnimationFrame @processFrame # recurse
 

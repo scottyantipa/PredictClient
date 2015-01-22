@@ -17,8 +17,7 @@ module.exports = class Widget extends BaseCanvasView
 			.mousemove((e) => @onMouseMove(e))
 
 	# the rest should be done in subclass
-	updateModel: ->
-		super
+	render: ->
 		@draw()
 
 	# called when there is a data change

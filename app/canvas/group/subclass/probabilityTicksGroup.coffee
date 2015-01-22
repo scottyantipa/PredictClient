@@ -8,7 +8,7 @@ LineModel = require '../../shape/subclass/lineModel'
 Styling = require '../../util/styling'
 
 module.exports = class ProbabilityTicksGroup extends Group
-	updateModel: ->
+	render: ->
 		super
 		newShapeModels = @createNewShapes()
 		@updateShapes newShapeModels

@@ -8,7 +8,7 @@ PointModel = require '../../shape/subclass/pointModel'
 Styling = require '../../util/styling'
 
 module.exports = class EventPointsGroup extends Group
-	updateModel: (options) ->
+	render: (options) ->
 		super
 		newShapeModels = 
 			for prediction in @model.predictions

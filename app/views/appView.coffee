@@ -29,14 +29,20 @@ module.exports = class AppView extends Backbone.View
 
 		@dataManager = new DataManager
 
+		@model.on "change:selectedWellKey", @change_selectedWellKey
+
 		$chartContainer = @$('.visualization.container')
 		{w, h} = @sizeForChart()
 		@chartWidget = new TranscripticWidget
 			$element: $chartContainer
 			delegate: @
+			
 			model: new WidgetModel
 				w: w
 				h: h
+				selectedWellKey: null
+				didMouseOverLine: @didMouseOverLine
+				
 		
 		@dataManager.fetchAll => 
 			@onDataChange()
@@ -48,6 +54,19 @@ module.exports = class AppView extends Backbone.View
 	onDataChange: ->
 		@chartWidget.onDataChange()
 
+	#
+	# delegate methods
+	#
+	didMouseOverLine: (wellKey) =>
+		@model.set "selectedWellKey", wellKey
+
+	#
+	# Backbone model
+	#
+	change_selectedWellKey: =>
+		@chartWidget.model.selectedWellKey = @model.get "selectedWellKey"	
+		@onDataChange()
+
 	###
 	Browser events
 	###	
@@ -56,7 +75,7 @@ module.exports = class AppView extends Backbone.View
 
 	onResize: =>
 		_.extend @chartWidget.model, @sizeForChart()
-		@chartWidget.updateModel()
+		@chartWidget.render()
 
 	###
 	Delegate methods

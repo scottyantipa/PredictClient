@@ -10,8 +10,7 @@ TextModel = require '../../shape/subclass/textModel'
 
 module.exports = class LabelsGroup extends Group
 
-	updateModel: (options) ->
-		super
+	render: (options) ->
 		@updateShapes @createNewShapes()
 
 	createNewShapes: ->
@@ -22,7 +21,7 @@ module.exports = class LabelsGroup extends Group
 				y: y
 				x: x
 				key: "#{value}"
-				opacity: 1#Styling.AXIS_LABEL_OPACITY
+				opacity: 1
 				data: data
 
 	newShapeWithOptions: (options) ->

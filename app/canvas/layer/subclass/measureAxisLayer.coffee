@@ -1,3 +1,4 @@
+Koolaid = require '../../koolaid'
 Layer = require '../layer'
 Labels = require '../../group/subclass/labelsGroup'
 Styling = require '../../util/styling'
@@ -12,16 +13,11 @@ module.exports = class MeasureAxisLayer extends Layer
 		group.tweenMapRemoveShapeForGroups = @tweenMapRemoveShapeForGroups for group in @groups
 		super
 
-
-	updatesForChildren: ->
-		{pad} = @model
-
+	render: ->
 		# The labels group will be positioned at the upper left most location
-		{top, left} = pad
-		tx = left
-		ty = top
+		tx = ty = @model.pad
 		labels = @calcLabels()
-		[
+		Koolaid.renderChildren [
 			[@labelsGroup, {labels, tx, ty}]
 		]
 

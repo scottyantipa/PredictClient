@@ -8,20 +8,20 @@ PolygonModel = require '../../shape/subclass/polygonModel'
 Styling = require '../../util/styling'
 
 module.exports = class qpcrLinesGroup extends Group
-	updateModel: (options) ->
-		super
+	render: ->
 		@updateShapes @createNewShapes()
 
 	# For each well, create a Polygon with all of the results
 	createNewShapes: ->
 		numWellsModeled = 0
-		{bezierPointsByWellKey} = @model
-		for wellKey, bezierPoints of bezierPointsByWellKey
+		{bezierPointsByWellKey, stroke, lineWidth} = @model
+		for wellKey, {poly, bezierPoints} of bezierPointsByWellKey
 			new PolygonModel {
 				bezierPoints
 				closePath: false
-				lineWidth: 2
+				lineWidth: lineWidth or 2
 				key: "#{wellKey}"
+				stroke: stroke
 			}
 
 	newShapeWithOptions: (options) ->
@@ -30,5 +30,3 @@ module.exports = class qpcrLinesGroup extends Group
 	# For now, do not animte on add/remove becuase we dont have it properly set up
 	tweenMapForAddShape: (shape) -> false
 	tweenMapForRemoveShape: (shape) -> false
-
-

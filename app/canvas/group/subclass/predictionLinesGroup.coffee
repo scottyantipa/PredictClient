@@ -6,7 +6,7 @@ Styling = require '../../util/styling'
 module.exports = class PredictionLinesGroup extends Group
 	lineKeySeparator: "::"
 	
-	updateModel: (options) ->
+	render: (options) ->
 		super
 		newShapeModels = @createNewShapes()
 		@updateShapes newShapeModels

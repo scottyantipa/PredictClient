@@ -44,7 +44,7 @@ module.exports = class ChartWidget extends Widget
 	# Called by appView when dataManager gets data back
 	# Get results and structure model with: predictions, scales
 	onDataChange: ->
-		@updateModel()
+		@render()
 
 	###
 	For now, let's have parents update their child's model.
@@ -52,7 +52,7 @@ module.exports = class ChartWidget extends Widget
 	-- No animation (model0 not tracked)
 	-- All views must be able to redraw themselves just from model
 	###
-	updateModel: ->
+	render: ->
 		# size our div container
 		{w, h} = @model
 		@$element.attr 'width', w

@@ -9,7 +9,7 @@ Styling = require '../../util/styling'
 
 module.exports = class TickLabelsGroup extends Group
 
-	updateModel: (options) ->
+	render: (options) ->
 		super
 		newShapeModels = @createNewShapes()
 		@updateShapes newShapeModels

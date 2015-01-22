@@ -1,3 +1,4 @@
+Koolaid = require '../../koolaid'
 Layer = require '../layer'
 Labels = require '../../group/subclass/labelsGroup'
 Styling = require '../../util/styling'
@@ -12,11 +13,11 @@ module.exports = class OrdinalAxisLayer extends Layer
 		super
 
 
-	updatesForChildren: ->
-		{pad} = @model
+	render: ->
 		{tx, ty} = @calcGroupPositions()
 		labels = @calcLabels()
-		[
+
+		Koolaid.renderChildren [
 			[@labelsGroup, {labels, tx, ty}]
 		]
 
@@ -30,9 +31,8 @@ module.exports = class OrdinalAxisLayer extends Layer
 
 	calcGroupPositions: ->
 		{pad, plotHeight} = @model
-		{top, left} = pad
-		tx = left
-		ty = plotHeight + top + Styling.MAX_RADIUS
+		tx = pad
+		ty = plotHeight + pad
 		{tx, ty}
 
 	xValForShape: (shape, scale = @model.scale) ->
