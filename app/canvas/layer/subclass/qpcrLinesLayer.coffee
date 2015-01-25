@@ -29,5 +29,5 @@ module.exports = class qpcrLinesLayer extends Layer
 	calcGroupPositions: ->
 		{pad, plotHeight} = @model
 		tx = pad
-		ty = plotHeight + pad + Styling.MAX_RADIUS
+		ty = plotHeight + pad
 		{tx, ty}

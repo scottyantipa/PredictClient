@@ -76,8 +76,7 @@ module.exports = class TranscripticWidget extends Widget
 		numWellsModeled = 0
 		for wellKey, results of resultsByWell
 			numWellsModeled++
-			# For debugging we can draw less lines
-			# break if numWellsModeled is 50
+			
 			allPoints =
 				for {cycle, fluorescense} in results
 					[cycle, fluorescense]
@@ -100,11 +99,12 @@ module.exports = class TranscripticWidget extends Widget
 			xValuesToGraph = roots.concat [xAxisScale.domain[0],_.last(xAxisScale.domain)] # include the first and last points
 			# so now we have out start/end points and local maxima/minima
 			# Lets add a few more points if we only have 2 or 3
-			xValuesToGraph = xValuesToGraph.concat [10, 30]
-			xValuesToGraph = xValuesToGraph.sort()
+			xValuesToGraph = xValuesToGraph.concat [5, 10, 25, 30]
+			xValuesToGraph = _.sortBy xValuesToGraph, (x) -> x
 
-			bezierPoints = for x in xValuesToGraph
-				[xAxisScale.map(x), -fluorescenseScale.map(poly.eval(x))]
+			bezierPoints = for x in [1,5,10,15,30,40]
+				[xAxisScale.map(x), -fluorescenseScale.map(allPoints[x - 1][1])]
+
 
 			@state.bezierPointsByWellKey[wellKey] = {poly, bezierPoints}
 		

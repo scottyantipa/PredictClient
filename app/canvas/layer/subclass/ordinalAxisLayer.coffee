@@ -26,13 +26,13 @@ module.exports = class OrdinalAxisLayer extends Layer
 	calcLabels: ->
 		for tick in @model.scale.ticks @MIN_GAP_BETWEEN_LABELS
 			value: tick
-			y: 0
+			y: 20 # gives space for labels so that data doesnt get draw on them
 			x: @model.scale.map tick
 
 	calcGroupPositions: ->
 		{pad, plotHeight} = @model
 		tx = pad
-		ty = plotHeight + pad
+		ty = plotHeight + pad 
 		{tx, ty}
 
 	xValForShape: (shape, scale = @model.scale) ->
