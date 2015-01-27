@@ -63,9 +63,10 @@ module.exports = class PlateWellsLayer extends Layer
 						y: rowProjection + @model.origin[1] - 3
 						r: if isSelected then maxRadius else maxRadius - 2
 						key: key
-						stroke: if isSelected then Styling.SELECTED_SHAPE_BLUE else color
-						lineWidth: if isSelected then 8 else .5
+						stroke: color
+						lineWidth: if isSelected then 8 else 2
 						fill: color
+						opacity: if isSelected then 1 else .3
 
 
 		@updateShapes _.flatten(shapeModels)

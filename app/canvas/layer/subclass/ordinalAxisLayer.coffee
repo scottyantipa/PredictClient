@@ -52,6 +52,9 @@ module.exports = class OrdinalAxisLayer extends Layer
 # Special tweening for adding/removing shapes.  These functions
 # get passed to our child groups to be used.
 # ----------------------------------------------
+
+	# NOTE that this behaves differently for @vertical vs not @vertical
+	# In both cases we tween x which isn't correct for vertical, we should tween y
 	tweenMapAddShapeForGroups: (shape) =>
 		propsToTween = [] # figure out what we can tween and put it in here
 		{opacity, x} = shape.model

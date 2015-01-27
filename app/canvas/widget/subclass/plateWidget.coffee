@@ -60,7 +60,7 @@ module.exports = class PlateWidget extends Widget
 			domain: [1..@model.numColumns] 
 			range: [0, plotWidth]
 
-		origin = [60, 30] # set the origin of the chart in a little bit
+		origin = [pad, 30] # set the origin of the chart in a little bit
 
 		Koolaid.renderChildren [
 			[
@@ -82,7 +82,7 @@ module.exports = class PlateWidget extends Widget
 					w
 					h
 					labelYOffset: origin[1]
-					labelXOffset: 0
+					labelXOffset: 20
 					vertical: true
 					fill: Styling.WHITE
 				}
