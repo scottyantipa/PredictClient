@@ -1,6 +1,0 @@
-Koolaid = require '../../koolaid'
-Layer = require '../layer'
-Group = require '../../group/group'
-Styling = require '../../util/styling'
-
-module.exports = class PlateWellsLayer extends Layer

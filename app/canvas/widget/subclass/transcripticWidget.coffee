@@ -138,7 +138,7 @@ module.exports = class TranscripticWidget extends Widget
 					pad
 					plotHeight
 					plotWidth
-					stroke: "#BD040D"
+					stroke: Styling.SELECTED_SHAPE_BLUE
 					lineWidth: 4
 				}
 			]
