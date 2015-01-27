@@ -21,7 +21,6 @@ for row in [1..NUM_ROWS]
 		logFnc = (x) ->
 			k = .3 * column
 			5000 / (1 + Math.pow(Math.E, -k*(x - ((200 * row) + (6 * column)) / 80)))
-
 		
 		wellKey = DataManager.keyForWell row, column
 

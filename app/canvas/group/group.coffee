@@ -193,3 +193,11 @@ module.exports = class Group extends BaseCanvasView
 				break
 			when 'add'
 				break
+
+	mouseMove: (x, y) ->
+		return unless @respondsToMouseEvents
+		for shape in @shapes
+			if shape.doesIntersectPoint x, y
+				@cursorMovedInShape shape
+		return
+

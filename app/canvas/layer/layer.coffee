@@ -50,4 +50,10 @@ module.exports = class Layer extends BaseCanvasView
 		@$canvas.attr 'width', w*ratio + "px"
 		@$canvas.attr 'height', h*ratio + "px"
 
+	mouseMove: (x,y) ->
+		for group in @groups
+			{tx, ty} = group.model
+			[xOffset, yOffset] = [x - tx, y - ty]
+			group.mouseMove xOffset, yOffset
+
 	children: -> @groups

@@ -10,6 +10,7 @@ module.exports = class PlateWellsLayer extends Layer
 
 	constructor: ({@$canvas, @model}) ->
 		@circlesGroup = new Group {}
+		@circlesGroup.cursorMovedInShape = @cursorMovedInShape # overrides group method
 		@circlesGroup.render = @renderCircles
 		@circlesGroup.newShapeWithOptions = @newShapeWithOptions
 		@circlesGroup.tweenMapForAddShape = @tweenMapForAddShape
@@ -18,6 +19,7 @@ module.exports = class PlateWellsLayer extends Layer
 		super
 
 	render: ->
+		@circlesGroup.respondsToMouseEvents = @model.respondsToMouseEvents
 		Koolaid.renderChildren [
 			[
 				@circlesGroup
@@ -27,6 +29,8 @@ module.exports = class PlateWellsLayer extends Layer
 					origin: @model.origin
 					selectedWellKey: @model.selectedWellKey
 					drawSelected: @model.drawSelected
+					tx: 0
+					ty: 0
 				}
 			]
 		]
@@ -42,6 +46,9 @@ module.exports = class PlateWellsLayer extends Layer
 	# line up with the column headers.  This needs to be done programmatically
 	# by measuring the column headerse and properly centering them
 	renderCircles: ->
+		maxRadius = @model.rowScale.k / 3
+		minRadius = 6
+		if maxRadius < minRadius then maxRadius = minRadius + 2
 		shapeModels =
 			for row in @model.rowScale.domain
 				rowProjection = @model.rowScale.map row
@@ -53,7 +60,7 @@ module.exports = class PlateWellsLayer extends Layer
 					new PointModel
 						x: columnProjection + @model.origin[0] + 4
 						y: rowProjection + @model.origin[1] - 3
-						r: if isSelected then 8 else 5
+						r: if isSelected then maxRadius else maxRadius - 2
 						key: key
 						stroke: if isSelected then Styling.SELECTED_SHAPE_BLUE else Styling.BLACK
 						lineWidth: if isSelected then 2 else .5
@@ -61,6 +68,8 @@ module.exports = class PlateWellsLayer extends Layer
 
 
 		@updateShapes _.flatten(shapeModels)
+
+	cursorMovedInShape: (shape) => @model.wellSelected shape.model.key
 
 	tweenMapForAddShape: (shape) ->
 		return false
@@ -83,7 +92,7 @@ module.exports = class PlateWellsLayer extends Layer
 
 		# returning false for now, but use this if you'd like to animate radius
 		{model} = shape
-		
+
 		objToTween: model
 		delegate: shape.delegate
 		status: 'remove'

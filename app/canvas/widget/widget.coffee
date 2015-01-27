@@ -24,9 +24,12 @@ module.exports = class Widget extends BaseCanvasView
 	# called when there is a data change
 	draw: ->
 		layer.draw() for layer in @layers
+		return
 
 	onMouseMove: (e) ->
 		[x,y] = [e.offsetX, e.offsetY]
+		layer.mouseMove(x,y) for layer in @layers
+		return
 	
 	children: ->
 		@layers

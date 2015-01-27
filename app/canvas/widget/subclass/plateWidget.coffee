@@ -69,7 +69,7 @@ module.exports = class PlateWidget extends Widget
 					scale: @state.columnScale
 					w
 					h
-					labelYOffset: -10 # so that the bottom of the numbers line up with the top of origin
+					labelYOffset: -13 # so that the bottom of the numbers line up with the top of origin
 					labelXOffset: origin[0]
 				}
 			]
@@ -96,6 +96,8 @@ module.exports = class PlateWidget extends Widget
 					pad
 					origin
 					drawSelected: false
+					wellSelected: @wellSelected
+					respondsToMouseEvents: true
 				}
 			]
 
@@ -110,6 +112,7 @@ module.exports = class PlateWidget extends Widget
 					origin
 					selectedWellKey: @model.selectedWellKey
 					drawSelected: true
+					respondsToMouseEvents: false
 				}
 			]
 		]
@@ -126,3 +129,5 @@ module.exports = class PlateWidget extends Widget
 		plotWidth = w - Styling.CHART_PAD
 		plotHeight = h - 50
 		[plotWidth, plotHeight]
+
+	wellSelected: (welLKey) => @model.didMouseOverWell welLKey
