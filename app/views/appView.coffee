@@ -18,7 +18,6 @@ module.exports = class AppView extends Backbone.View
 
 	initialize: ({@el}) ->
 		@render()
-		@onResize = _.debounce @onResize, 500
 
 		chromeModel = new Backbone.Model
 		chromeModel.set 'title', @appTitle
@@ -98,9 +97,10 @@ module.exports = class AppView extends Backbone.View
 	Browser events
 	###	
 	setBrowserEvents: ->
-		$(window).on "resize", @onResize
+		$(window).on "resize", _.debounce @onResize, 300
 
 	onResize: =>
+		console.log "resize"
 		_.extend @lineChartWidget.model, @sizeForLineChart()
 		_.extend @plateChartWidget.model, @sizeForPlateChart()
 		@lineChartWidget.render()
