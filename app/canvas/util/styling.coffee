@@ -19,3 +19,14 @@ module.exports = class CanvasStyling
 	# Animation
 	@DEFAULT_ANIMATION_DURATION: 500
 	@QUICK_ANIMATION_DURATION: 300
+
+	# TRANSCRIPTIC SPECIFIC LINE COLORING
+	@mapRowToColor: (row) ->
+		if row <= 4
+			"#EF6A42" # orange
+		else if row > 4 and row <= 8
+			"#96EF42" # green
+		else if row > 8 and row <= 12
+			"#CC42EF" # magenta
+		else
+			"#EF426A" # red

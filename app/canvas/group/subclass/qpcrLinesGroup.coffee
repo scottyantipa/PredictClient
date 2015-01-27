@@ -6,6 +6,7 @@ Group = require '../group'
 Polygon = require '../../shape/subclass/polygon'
 PolygonModel = require '../../shape/subclass/polygonModel'
 Styling = require '../../util/styling'
+DataManager = require '../../../data/dataManager'
 
 module.exports = class qpcrLinesGroup extends Group
 	render: ->
@@ -16,12 +17,13 @@ module.exports = class qpcrLinesGroup extends Group
 		numWellsModeled = 0
 		{bezierPointsByWellKey, stroke, lineWidth} = @model
 		for wellKey, {poly, bezierPoints} of bezierPointsByWellKey
+			{row} = DataManager.wellFromKey wellKey
 			new PolygonModel {
 				bezierPoints
 				closePath: false
 				lineWidth: lineWidth or .5
 				key: "#{wellKey}"
-				stroke: stroke
+				stroke: Styling.mapRowToColor row
 			}
 
 	newShapeWithOptions: (options) ->

@@ -71,6 +71,7 @@ module.exports = class PlateWidget extends Widget
 					h
 					labelYOffset: -13 # so that the bottom of the numbers line up with the top of origin
 					labelXOffset: origin[0]
+					fill: Styling.WHITE
 				}
 			]
 
@@ -83,6 +84,7 @@ module.exports = class PlateWidget extends Widget
 					labelYOffset: origin[1]
 					labelXOffset: 0
 					vertical: true
+					fill: Styling.WHITE
 				}
 			]
 

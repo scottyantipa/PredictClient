@@ -65,7 +65,8 @@ module.exports = class DataManager
 		"row:#{row}||column:#{column}"
 
 	@wellFromKey: (wellKey) ->
-		getNum = (str) => parseInt str.split(@COLON)[1]
+		debugger
+		getNum = (str) => parseInt str.split(":")[1]
 		[rowStr, columnStr] = wellKey.split "||"
 		
 		row: getNum rowStr

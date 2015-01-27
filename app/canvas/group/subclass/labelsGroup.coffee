@@ -14,7 +14,7 @@ module.exports = class LabelsGroup extends Group
 		@updateShapes @createNewShapes()
 
 	createNewShapes: ->
-		for {data, value, x, y} in @model.labels
+		for {data, value, x, y, fill} in @model.labels
 			new TextModel
 				fontSize: 12
 				text: "#{value}"
@@ -23,6 +23,7 @@ module.exports = class LabelsGroup extends Group
 				key: "#{value}"
 				opacity: 1
 				data: data
+				fill: fill
 
 	newShapeWithOptions: (options) ->
 		new Text options

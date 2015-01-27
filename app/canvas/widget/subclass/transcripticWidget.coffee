@@ -99,6 +99,7 @@ module.exports = class TranscripticWidget extends Widget
 					pad
 					plotHeight
 					plotWidth
+					fill: Styling.WHITE
 				}
 			]
 
@@ -111,6 +112,7 @@ module.exports = class TranscripticWidget extends Widget
 					pad
 					labelYOffset: plotHeight + pad
 					labelXOffset: pad
+					fill: Styling.WHITE
 				}
 			]
 
@@ -123,7 +125,7 @@ module.exports = class TranscripticWidget extends Widget
 					pad
 					plotHeight
 					plotWidth
-					stroke: Styling.BLACK
+					stroke: Styling.WHITE
 				}
 			],
 

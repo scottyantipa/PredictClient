@@ -32,10 +32,12 @@ module.exports = class OrdinalAxisLayer extends Layer
 				value: tick
 				y: @model.scale.map tick
 				x: 20
+				fill: @model.fill
 			else
 				value: tick
 				y: 20 # gives space for labels so that data doesnt get draw on them
 				x: @model.scale.map tick
+				fill: @model.fill
 
 	calcGroupPositions: ->
 		{labelYOffset, labelXOffset} = @model
