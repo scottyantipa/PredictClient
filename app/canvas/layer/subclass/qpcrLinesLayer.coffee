@@ -21,6 +21,7 @@ module.exports = class qpcrLinesLayer extends Layer
 					ty
 					bezierPointsByWellKey
 					stroke
+					lineWidth
 				}
 			]
 		]

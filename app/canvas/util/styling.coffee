@@ -4,6 +4,9 @@ module.exports = class CanvasStyling
 	@CHART_LINES_FILL: "#C4C2C2"
 	@CONNECTING_PREDICTION_LINES: "#3079F0"
 	@AXIS_LABEL_OPACITY: 1
+	@SELECTED_SHAPE_BLUE: "#3AB8FC"
+	@BLACK: "#000"
+	@WHITE: "#FFF"
 
 	# Shapes
 	@MIN_RADIUS: 2

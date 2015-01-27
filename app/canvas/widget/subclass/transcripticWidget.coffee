@@ -57,15 +57,14 @@ module.exports = class TranscripticWidget extends Widget
 		# Calculate where the axis should be placed
 		[plotWidth, plotHeight] = @getChartSizes()
 
-
-		{results} = @delegate.state() # this won't work with multiple chart widgets
-		{groups, projections, resultsByWell} = results
+		@state.results = @delegate.state().results # this won't work with multiple chart widgets
+		{groups, projections, resultsByWell} = @state.results
 		fluorescense = projections[0] # will only have a single projection which is fluorescense
 		@state.fluorescenseScale = fluorescenseScale = new LinearScale
 			domain: [fluorescense.domain[0], fluorescense.domain[1]]
 			range: [0, plotHeight]
 
-		{name, domain} = results.groups[0] # cycle
+		{name, domain} = @state.results.groups[0] # cycle
 		@state.xAxisScale = xAxisScale = new OrdinalScale
 			domain: domain
 			range: [0, plotWidth]
@@ -81,32 +80,11 @@ module.exports = class TranscripticWidget extends Widget
 				for {cycle, fluorescense} in results
 					[cycle, fluorescense]
 
-			# Get coefficients to a polynomial that approximates the cycle * fluor data
-			{equation} = regression 'polynomial', allPoints, 4
-			# note that regression lib outputs 'equations' as an array of coefficients
-			# in increasing x power, e.g. [a0, .... , an] for poly a0x^0 ... + anx^n
-
-			# Use Polynomial library to create a polynomial from the coefficients
-			# Note that Polynomial lib takes coefficients in order of decreasing exp power (the opposite of
-			# regression lib) so we reverse the array from regression
-			# equation = equation.map (coef) -> (Math.round(coef * 100) / 100
-			poly = new Polynomial equation.reverse() # the two libraries take arguments in different orders
-
-			# get roots of the derivative, which are local maxima/minima of our approximating polynomial
-			roots = poly.getDerivative().getRootsInInterval 1, 40
-			roots = roots.map (root) -> Math.floor(root) # since we are on an ordinal scale lets map natural numbers
-			xValuesToGraph = roots
-			xValuesToGraph = roots.concat [xAxisScale.domain[0],_.last(xAxisScale.domain)] # include the first and last points
-			# so now we have out start/end points and local maxima/minima
-			# Lets add a few more points if we only have 2 or 3
-			xValuesToGraph = xValuesToGraph.concat [5, 10, 25, 30]
-			xValuesToGraph = _.sortBy xValuesToGraph, (x) -> x
-
-			bezierPoints = for x in [1,5,10,15,30,40]
+			bezierPoints = for x in [1,5,10,15,25,30,35,40]
 				[xAxisScale.map(x), -fluorescenseScale.map(allPoints[x - 1][1])]
 
 
-			@state.bezierPointsByWellKey[wellKey] = {poly, bezierPoints}
+			@state.bezierPointsByWellKey[wellKey] = {bezierPoints}
 		
 		selectedBezierPointsByWellKey = {}
 		for wellKey, value of @state.bezierPointsByWellKey
@@ -133,8 +111,8 @@ module.exports = class TranscripticWidget extends Widget
 					w
 					h
 					pad
-					plotHeight
-					plotWidth
+					labelYOffset: plotHeight + pad
+					labelXOffset: pad
 				}
 			]
 
@@ -176,24 +154,27 @@ module.exports = class TranscripticWidget extends Widget
 		[plotWidth, plotHeight]
 
 	onMouseMove: (e) ->
+		start = new Date()
 		[x,y] = [e.offsetX - Styling.CHART_PAD, e.offsetY - Styling.CHART_PAD]
 		# THIS needs to be abstracted (needing to know about drawing in vert
 		# direction or not).  Should be an option in the Scale obj.
 		[plotWidth, plotHeight] = @getChartSizes()
 		y = plotHeight - y # have to alter y since we draw in negative direction
-		cycle = Math.round @state.xAxisScale.invert x # this probably wont be an integer
-		fluorescense = @state.fluorescenseScale.invert y 
+		cycleAtCursor = Math.round @state.xAxisScale.invert x # this probably wont be an integer
+		fluorescenseAtCursor = @state.fluorescenseScale.invert y 
 
-		closestFluorescense = Infinity
-		keyOfClosestWell = null
-		for wellKey, {bezierPoints, poly} of @state.bezierPointsByWellKey
-			fluorescenseOfThisWell = poly.eval cycle # note this is an aproximation
-			if (fluorDiff = Math.abs(fluorescense - fluorescenseOfThisWell)) < closestFluorescense
-				closestFluorescense = fluorDiff
-				keyOfClosestWell = wellKey
+		resultsByCycle = @state.results.resultsByCycle
+		valuesByWell = resultsByCycle[cycleAtCursor]
+		minStart = new Date()
+		minWell = _.min valuesByWell, ({wellKey, fluorescense}) ->
+			Math.abs fluorescense - fluorescenseAtCursor
 
-		@model.didMouseOverLine keyOfClosestWell
-		@render()
+		diffOfClosest = Math.abs(fluorescenseAtCursor - minWell.fluorescense)
 
-
-
+		selectedWellKey = 
+			if diffOfClosest < 100
+				minWell.wellKey
+			else
+				null
+		@model.didMouseOverLine selectedWellKey
+		console.log "calculated key in ", (new Date().getTime()) - start.getTime(), minWell.wellKey		

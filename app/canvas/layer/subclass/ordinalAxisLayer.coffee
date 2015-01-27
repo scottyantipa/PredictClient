@@ -25,15 +25,23 @@ module.exports = class OrdinalAxisLayer extends Layer
 	# and to not draw any of them to close together
 	calcLabels: ->
 		for tick in @model.scale.ticks @MIN_GAP_BETWEEN_LABELS
-			value: tick
-			y: 20 # gives space for labels so that data doesnt get draw on them
-			x: @model.scale.map tick
+			mappedValue = @model.scale.map tick
+			domainValue = tick
+
+			if @model.vertical
+				value: tick
+				y: @model.scale.map tick
+				x: 20
+			else
+				value: tick
+				y: 20 # gives space for labels so that data doesnt get draw on them
+				x: @model.scale.map tick
 
 	calcGroupPositions: ->
-		{pad, plotHeight} = @model
-		tx = pad
-		ty = plotHeight + pad 
-		{tx, ty}
+		{labelYOffset, labelXOffset} = @model
+		
+		tx: labelXOffset
+		ty: labelYOffset
 
 	xValForShape: (shape, scale = @model.scale) ->
 		scale.map shape.x

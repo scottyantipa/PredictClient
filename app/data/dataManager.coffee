@@ -7,6 +7,7 @@ module.exports = class DataManager
 	COLON: ":" # used in key formatting
 	NUM_COLUMNS: 24
 	NUM_ROWS: 16
+	NUM_CYCLES: 40
 	state:
 		results: []
 
@@ -22,12 +23,28 @@ module.exports = class DataManager
 				console.warn "error loading qpcr data: ", results
 
 	parseResults: (resultsByWell) ->
+		resultsByCycle = {}
+		minCycle = 1
+		maxCycle = 40
+		minFluor = Infinity
+		maxFluor = -Infinity
+		for wellKey, results of resultsByWell
+			for {cycle, fluorescense} in results
+				if cycle < minCycle then minCycle = cycle
+				if cycle > maxCycle then maxCycle = cycle
+				if fluorescense < minFluor then minFluor = fluorescense
+				if fluorescense > maxFluor then maxFluor = fluorescense
+				if not resultsByCycle["#{cycle}"]
+					resultsByCycle[cycle] = []
+				resultsByCycle["#{cycle}"].push {wellKey, fluorescense}
+
+
 
 		@state.results =
 			groups: [
 
 					name: "cycle"
-					domain: [1..40]
+					domain: [minCycle..maxCycle]
 				,
 				
 					name: "well"
@@ -37,41 +54,19 @@ module.exports = class DataManager
 
 			projections: [
 				name: "fluorescense"
-				domain: [0, 5000]
+				domain: [minFluor, maxFluor]
 			]
 
 			resultsByWell: resultsByWell
+			resultsByCycle: resultsByCycle
 
 
-		# Commented out code here is for if i'm taking the data from transcriptic source
-		###
-		plateread_data = results.data.plateread_data
-		resultsByWell = {}
-		minFluor = 0
-		maxFluor = 0
-		for {channelSeparatedData}, cycle in plateread_data
-			break if cycle is 40
-			# for right now i'm only looking at the first of the 6 arrays
-			allWellDataPoints = channelSeparatedData[0]
-			
-			for row in [1..@NUM_ROWS]
-				for column in [1..@NUM_COLUMNS]
-					wellKey = @keyForWell row, column
-					wellResults = resultsByWell[wellKey] ?= [] # if this is the first data point for this well, we need to create the array
-					fluorescense = allWellDataPoints[@wellFlatIndex(row, column) - 1] # row/columns start at 1, so remove 1
-					# fluorescense = Math.pow fluorescense, 2
-					if minFluor > fluorescense
-						minFluor = fluorescense
-					if maxFluor < fluorescense
-						maxFluor = fluorescense
-					wellResults.push {cycle, fluorescense}
-		###
-	keyForWell: (row, column) ->
-		"row#{@COLON}#{row}#{@KEY_SEPARATOR}column#{@COLON}#{column}"
+	@keyForWell: (row, column) ->
+		"row:#{row}||column:#{column}"
 
-	wellFromKey: (wellKey) ->
+	@wellFromKey: (wellKey) ->
 		getNum = (str) => parseInt str.split(@COLON)[1]
-		[rowStr, columnStr] = wellKey.split @KEY_SEPARATOR
+		[rowStr, columnStr] = wellKey.split "||"
 		
 		row: getNum rowStr
 		column: getNum columnStr

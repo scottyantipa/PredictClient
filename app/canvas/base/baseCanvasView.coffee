@@ -19,9 +19,3 @@ module.exports = class BaseCanvasView
 	onClick: (options) ->
 		for child in @children()
 			break if not child.onClick options
-
-	# This is how a view passes updates to its children.
-	# It returns an array of array, like:  [[childView, updates], [childView, updates], ...].
-	# Then in this base class, render extends the childs model with the updates and then calls render on the child
-	updatesForChildren: ->
-		[] # default, don't update anybody (like groups dont update their shapes)
