@@ -8,18 +8,17 @@ module.exports = class Widget extends BaseCanvasView
 
 	# Call super in subclass
 	constructor: ({@model, @$element, @delegate}) ->
-		{h, w, tx, ty} = @model
-		@$element.attr 'width', w
-		@$element.attr 'height', h
-		@$element.css 'top', ty
-		@$element.css 'left', tx
-
 		@$element
 			.click((e) => @onClick(e))
 			.mousemove((e) => @onMouseMove(e))
 
 	# the rest should be done in subclass
 	render: ->
+		{h, w, tx, ty} = @model
+		@$element.attr 'width', w
+		@$element.attr 'height', h
+		@$element.css 'top', ty
+		@$element.css 'left', tx
 		@draw()
 
 	# called when there is a data change
@@ -27,7 +26,7 @@ module.exports = class Widget extends BaseCanvasView
 		layer.draw() for layer in @layers
 
 	onMouseMove: (e) ->
-		return 
+		[x,y] = [e.offsetX, e.offsetY]
 	
 	children: ->
 		@layers

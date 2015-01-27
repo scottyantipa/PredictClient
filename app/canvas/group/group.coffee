@@ -188,7 +188,6 @@ module.exports = class Group extends BaseCanvasView
 	didFinishTween: (tween) =>
 		switch tween.status
 			when 'remove'
-				debugger
 				@removeShapeFromShapes tween.objToTween.key
 			when 'update'
 				break

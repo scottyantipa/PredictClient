@@ -33,7 +33,7 @@ module.exports = class PlateWidget extends Widget
 			$canvas: plateWellsCanvas
 			model: new LayerModel {}
 
-		selectedPlateWellsCanvas = $('<canvas id="plate-wells"></canvas>')
+		selectedPlateWellsCanvas = $('<canvas id="plate-wells-selected"></canvas>')
 		@$element.append selectedPlateWellsCanvas
 		@selectedPlateWellsLayer = new PlateWellsLayer
 			$canvas: selectedPlateWellsCanvas
@@ -60,7 +60,7 @@ module.exports = class PlateWidget extends Widget
 			domain: [1..@model.numColumns] 
 			range: [0, plotWidth]
 
-		origin = [60, 30]
+		origin = [60, 30] # set the origin of the chart in a little bit
 
 		Koolaid.renderChildren [
 			[
@@ -123,6 +123,6 @@ module.exports = class PlateWidget extends Widget
 
 	getChartSizes: ->
 		{w, h} = @model
-		plotWidth = w - 2 * Styling.CHART_PAD
+		plotWidth = w - Styling.CHART_PAD
 		plotHeight = h - 50
 		[plotWidth, plotHeight]

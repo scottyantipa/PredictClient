@@ -15,16 +15,15 @@ resultsByWellKey = {}
 
 numWellsCreated = 0
 for row in [1..NUM_ROWS]
-	# break if numWellsCreated >= 1
 	for column in [1..NUM_COLUMNS]
-		# break if numWellsCreated >= 1
+		numWellsCreated++
+		# continue if numWellsCreated < 20 or numWellsCreated > 100
 		logFnc = (x) ->
-			5000 / (1 + Math.pow(Math.E, -(x - ((20 * row) * column) / 100)))
+			k = .3 * column
+			5000 / (1 + Math.pow(Math.E, -k*(x - ((200 * row) + (6 * column)) / 80)))
 
 		
 		wellKey = DataManager.keyForWell row, column
-
-		numWellsCreated++
 
 		resultsByWellKey[wellKey] ?= []
 		i = 1

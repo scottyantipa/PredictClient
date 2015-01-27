@@ -11,13 +11,14 @@ TranscripticWidget = require '../canvas/widget/subclass/transcripticWidget'
 PlateWidget = require '../canvas/widget/subclass/plateWidget'	
 WidgetModel = require '../canvas/widget/widgetModel'
 template = require './templates/appView'
+Koolaid = require '../canvas/koolaid'
 
 module.exports = class AppView extends Backbone.View
 	template: template
 	appTitle: "Transcriptic"
 
 	initialize: ({@el}) ->
-		@render()
+		@renderDOM()
 
 		chromeModel = new Backbone.Model
 		chromeModel.set 'title', @appTitle
@@ -29,51 +30,70 @@ module.exports = class AppView extends Backbone.View
 		@dataManager = new DataManager
 
 		@model.on "change:selectedWellKey", @change_selectedWellKey
-		[numRows, numColumns] = [@dataManager.NUM_ROWS, @dataManager.NUM_COLUMNS]
+		
 		# TranscripicWidget
 		$lineChartContainer = @$('.visualization.container.lines')
-		{w, h, tx, ty} = @sizeForLineChart()
 		@lineChartWidget = new TranscripticWidget
 			$element: $lineChartContainer
 			delegate: @
-			model: new WidgetModel {
-				w
-				h
-				tx
-				ty
-				numRows
-				numColumns
-				selectedWellKey: null
-				didMouseOverLine: @didMouseOverLine
-			}
+			model: new WidgetModel {}
 				
 		# Plate Widget
 		$plateChartContainer = @$('.visualization.container.plate')
-		{w, h, tx, ty} = @sizeForPlateChart()
 		@plateChartWidget = new PlateWidget
 			$element: $plateChartContainer
 			delegate: @
-			model: new WidgetModel {
-				w
-				h
-				tx
-				ty
-				numRows
-				numColumns
-				selectedWellKey: null
-				didMouseOverWell: @didMouseOverWell
-			}
+			model: new WidgetModel {}
 		
 		@dataManager.fetchAll => 
 			@onDataChange()
 
-	render: ->
+	renderDOM: ->
 		@el.append @template
 		@setBrowserEvents()
+		
+	render: ->
+		lineSize = @sizeForLineChart()
+		[wLine, hLine, txLine, tyLine] = [lineSize.w, lineSize.h, lineSize.tx, lineSize.ty]
+		
+		plateSize = @sizeForPlateChart()
+		[wPlate, hPlate, txPlate, tyPlate] = [plateSize.w, plateSize.h, plateSize.tx, plateSize.ty]
+
+		[numRows, numColumns] = [@dataManager.NUM_ROWS, @dataManager.NUM_COLUMNS]
+		selectedWellKey = @model.get "selectedWellKey"
+		Koolaid.renderChildren [
+			[
+				@lineChartWidget
+				{
+					w: wLine
+					h: hLine
+					tx: txLine
+					ty: tyLine
+					numRows
+					numColumns
+					selectedWellKey
+					didMouseOverLine: @didMouseOverLine
+				}
+			]
+
+			[
+				@plateChartWidget
+				{
+					w: wPlate
+					h: hPlate
+					tx: txPlate
+					ty: tyPlate
+					numRows
+					numColumns
+					selectedWellKey
+					didMouseOverWell: @didMouseOverWell
+				}
+			]
+		]
+
 
 	onDataChange: ->
-		@lineChartWidget.onDataChange()
-		@plateChartWidget.onDataChange()
+		@render()
 
 	#
 	# delegate methods
@@ -88,10 +108,7 @@ module.exports = class AppView extends Backbone.View
 	# Backbone model
 	#
 	change_selectedWellKey: =>
-		selected = @model.get "selectedWellKey"
-		@lineChartWidget.model.selectedWellKey = selected
-		@plateChartWidget.model.selectedWellKey = selected 
-		@onDataChange()
+		@render()
 
 	###
 	Browser events
@@ -100,13 +117,7 @@ module.exports = class AppView extends Backbone.View
 		$(window).on "resize", _.debounce @onResize, 300
 
 	onResize: =>
-		console.log "resize"
-		_.extend @lineChartWidget.model, @sizeForLineChart()
-		_.extend @plateChartWidget.model, @sizeForPlateChart()
-		@lineChartWidget.render()
-
-		@plateChartWidget.$element.attr 'top', ($('body').height() / 2)
-		@plateChartWidget.render()
+		@render()
 
 	###
 	Delegate methods

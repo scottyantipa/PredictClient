@@ -19,7 +19,7 @@ module.exports = class qpcrLinesGroup extends Group
 			new PolygonModel {
 				bezierPoints
 				closePath: false
-				lineWidth: lineWidth or 1
+				lineWidth: lineWidth or .5
 				key: "#{wellKey}"
 				stroke: stroke
 			}

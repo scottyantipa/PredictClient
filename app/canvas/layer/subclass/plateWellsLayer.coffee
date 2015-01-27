@@ -63,6 +63,9 @@ module.exports = class PlateWellsLayer extends Layer
 		@updateShapes _.flatten(shapeModels)
 
 	tweenMapForAddShape: (shape) ->
+		return false
+
+		# returning false for now, but use this if you'd like to animate radius
 		{model} = shape
 
 		objToTween: model
@@ -76,8 +79,11 @@ module.exports = class PlateWellsLayer extends Layer
 		]
 
 	tweenMapForRemoveShape: (shape) ->
-		{model} = shape
+		return false
 
+		# returning false for now, but use this if you'd like to animate radius
+		{model} = shape
+		
 		objToTween: model
 		delegate: shape.delegate
 		status: 'remove'

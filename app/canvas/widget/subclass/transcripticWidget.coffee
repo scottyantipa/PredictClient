@@ -50,6 +50,8 @@ module.exports = class TranscripticWidget extends Widget
 		@render()
 
 	render: ->
+		updatedProps = @updatedProperties()
+
 		# size our div container
 		{w, h} = @model
 		pad = Styling.CHART_PAD
@@ -57,45 +59,41 @@ module.exports = class TranscripticWidget extends Widget
 		# Calculate where the axis should be placed
 		[plotWidth, plotHeight] = @getChartSizes()
 
-		@state.results = @delegate.state().results # this won't work with multiple chart widgets
-		{groups, projections, resultsByWell} = @state.results
-		fluorescense = projections[0] # will only have a single projection which is fluorescense
-		@state.fluorescenseScale = fluorescenseScale = new LinearScale
-			domain: [fluorescense.domain[0], fluorescense.domain[1]]
-			range: [0, plotHeight]
+		if updatedProps.length is 1 and updatedProps[0] is "selectedWellKey"
+			@updateSelectedPoints()
+		else
+			@state.results = @delegate.state().results # this won't work with multiple chart widgets
+			{groups, projections, resultsByWell} = @state.results
+			fluorescense = projections[0] # will only have a single projection which is fluorescense
+			@state.fluorescenseScale = new LinearScale
+				domain: [fluorescense.domain[0], fluorescense.domain[1]]
+				range: [0, plotHeight]
 
-		{name, domain} = @state.results.groups[0] # cycle
-		@state.xAxisScale = xAxisScale = new OrdinalScale
-			domain: domain
-			range: [0, plotWidth]
-
-
-		# Calculate the qpcr lines here so they can be used by multiple layers
-		@state.bezierPointsByWellKey = {}
-		numWellsModeled = 0
-		for wellKey, results of resultsByWell
-			numWellsModeled++
-			
-			allPoints =
-				for {cycle, fluorescense} in results
-					[cycle, fluorescense]
-
-			bezierPoints = for x in [1,5,10,15,25,30,35,40]
-				[xAxisScale.map(x), -fluorescenseScale.map(allPoints[x - 1][1])]
+			{name, domain} = @state.results.groups[0] # cycle
+			@state.xAxisScale = new OrdinalScale
+				domain: domain
+				range: [0, plotWidth]
 
 
-			@state.bezierPointsByWellKey[wellKey] = {bezierPoints}
+			# Calculate the qpcr lines here so they can be used by multiple layers
+			@state.bezierPointsByWellKey = {}
+			numWellsModeled = 0
+			for wellKey, results of resultsByWell
+				numWellsModeled++
+				allPoints =
+					for {cycle, fluorescense} in results
+						[cycle, fluorescense]
+				bezierPoints = for x in [1..40]
+					[@state.xAxisScale.map(x), -@state.fluorescenseScale.map(allPoints[x - 1][1])]
+				@state.bezierPointsByWellKey[wellKey] = {bezierPoints}
 		
-		selectedBezierPointsByWellKey = {}
-		for wellKey, value of @state.bezierPointsByWellKey
-			if @model.selectedWellKey is wellKey
-				selectedBezierPointsByWellKey[wellKey] = value
+		@updateSelectedPoints()
 
 		Koolaid.renderChildren [
 			[
 				@measureAxisLayer
 				{
-					scale: fluorescenseScale
+					scale: @state.fluorescenseScale
 					w
 					h
 					pad
@@ -107,7 +105,7 @@ module.exports = class TranscripticWidget extends Widget
 			[
 				@xAxisLayer
 				{
-					scale: xAxisScale
+					scale: @state.xAxisScale
 					w
 					h
 					pad
@@ -125,14 +123,14 @@ module.exports = class TranscripticWidget extends Widget
 					pad
 					plotHeight
 					plotWidth
-					stroke: "#000"
+					stroke: Styling.BLACK
 				}
 			],
 
 			[
 				@selectedLinesLayer
 				{
-					bezierPointsByWellKey: selectedBezierPointsByWellKey
+					bezierPointsByWellKey: @state.selectedBezierPointsByWellKey
 					w
 					h
 					pad
@@ -147,9 +145,15 @@ module.exports = class TranscripticWidget extends Widget
 
 		super # so we get a draw() call
 
+	updateSelectedPoints: ->
+		@state.selectedBezierPointsByWellKey = {}
+		for wellKey, value of @state.bezierPointsByWellKey
+			if @model.selectedWellKey is wellKey
+				@state.selectedBezierPointsByWellKey[wellKey] = value
+
 	getChartSizes: ->
 		{w, h} = @model
-		plotWidth = w - 2 * Styling.CHART_PAD
+		plotWidth = w - Styling.CHART_PAD
 		plotHeight = h - 2 * Styling.CHART_PAD
 		[plotWidth, plotHeight]
 
@@ -161,7 +165,7 @@ module.exports = class TranscripticWidget extends Widget
 		[plotWidth, plotHeight] = @getChartSizes()
 		y = plotHeight - y # have to alter y since we draw in negative direction
 		cycleAtCursor = Math.round @state.xAxisScale.invert x # this probably wont be an integer
-		fluorescenseAtCursor = @state.fluorescenseScale.invert y 
+		fluorescenseAtCursor = @state.fluorescenseScale.invert y
 
 		resultsByCycle = @state.results.resultsByCycle
 		valuesByWell = resultsByCycle[cycleAtCursor]
@@ -170,11 +174,7 @@ module.exports = class TranscripticWidget extends Widget
 			Math.abs fluorescense - fluorescenseAtCursor
 
 		diffOfClosest = Math.abs(fluorescenseAtCursor - minWell.fluorescense)
-
-		selectedWellKey = 
-			if diffOfClosest < 100
-				minWell.wellKey
-			else
-				null
+		selectedWellKey = minWell.wellKey
+		# console.log "calculated key in ", (new Date().getTime()) - start.getTime(), minWell.wellKey
 		@model.didMouseOverLine selectedWellKey
-		console.log "calculated key in ", (new Date().getTime()) - start.getTime(), minWell.wellKey		
+		

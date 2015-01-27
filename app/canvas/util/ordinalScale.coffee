@@ -16,6 +16,17 @@ module.exports = class OrdinalScale extends LinearScale
 	computeDX: ->
 		@dx = @domain.length
 
+	# This is pretty expensive.  I just walk through the whole domain
+	# and find the x value that is closest to y when mapped
+	invert: (y) ->
+		smallestDiff = Infinity
+		closestX = null
+		for x in @domain
+			if (diff = Math.abs(@map(x) - y)) < smallestDiff
+				smallestDiff = diff
+				closestX = x
+		closestX
+
 	# For example, if this is an ordinal scale of natural numbers,
 	# we can pass it a real number and we will still map it properly (rather than place
 	# it at beginning or end like we would with linearly = false)

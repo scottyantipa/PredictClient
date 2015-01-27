@@ -19,3 +19,17 @@ module.exports = class BaseCanvasView
 	onClick: (options) ->
 		for child in @children()
 			break if not child.onClick options
+
+	# Returns the props that are different between old and new model
+	updatedProperties: ->
+		props = []
+		for key, value of @previousModel
+			continue if not @previousModel.hasOwnProperty key
+			if not @model[key]? or not _.isEqual(@previousModel[key], @model[key])
+				props.push key
+
+		for key, value of @model
+			if not @previousModel[key]?
+				props.push key
+
+		props
