@@ -72,17 +72,19 @@ module.exports = class PlateWellsLayer extends Layer
 			propName: 'r'
 			startValue: 0
 			endValue: model.r
+			duration: 300
 		]
 
 	tweenMapForRemoveShape: (shape) ->
-		return false
 		{model} = shape
 
 		objToTween: model
 		delegate: shape.delegate
-		status: 'add'
+		status: 'remove'
 		propsToTween: [
 			propName: 'r'
 			startValue: model.r
 			endValue: 0
+			duration: 300
+			delegate: shape.delegate
 		]

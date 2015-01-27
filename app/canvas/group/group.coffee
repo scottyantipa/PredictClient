@@ -142,10 +142,11 @@ module.exports = class Group extends BaseCanvasView
 		@tweenMapForAddShape shape
 
 	removeShape: (shape) =>
-		if not @tweenMapForRemoveShape shape
+		if not tweenMap = @tweenMapForRemoveShape shape
 			@removeShapeFromShapes shape.model.key
 			return false
-		return false
+		else
+			tweenMap
 
 	###
 	Default tweening for adding/removing shapes just fades opacity
@@ -187,6 +188,7 @@ module.exports = class Group extends BaseCanvasView
 	didFinishTween: (tween) =>
 		switch tween.status
 			when 'remove'
+				debugger
 				@removeShapeFromShapes tween.objToTween.key
 			when 'update'
 				break
