@@ -116,7 +116,7 @@ module.exports = class AppView extends Backbone.View
 
 	sizeForLineChart: ->
 		w: $('body').width()
-		h: $('.app').height() / 2
+		h: $('.app').height() / 2 + 30
 		tx: 0
 		ty: 0
 

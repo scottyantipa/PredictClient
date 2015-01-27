@@ -31,7 +31,7 @@ module.exports = class MeasureAxisLayer extends Layer
 			]
 			value: tick
 			y: @model.plotHeight - @model.scale.map tick
-			x: @model.scale.range[0] - 60
+			x: @model.scale.range[0] - 50
 
 	yValForShape: (shapeModel, model = @model) ->
 		model.plotHeight - model.scale.map shapeModel.data[0].value
