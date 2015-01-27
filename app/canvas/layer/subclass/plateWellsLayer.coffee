@@ -53,7 +53,7 @@ module.exports = class PlateWellsLayer extends Layer
 					new PointModel
 						x: columnProjection + @model.origin[0] + 4
 						y: rowProjection + @model.origin[1] - 3
-						r: 6
+						r: if isSelected then 8 else 5
 						key: key
 						stroke: if isSelected then Styling.SELECTED_SHAPE_BLUE else Styling.BLACK
 						lineWidth: if isSelected then 2 else .5
