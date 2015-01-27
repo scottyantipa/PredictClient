@@ -47,8 +47,18 @@ module.exports = class Layer extends BaseCanvasView
 	setCanvasSize: ->
 		ratio = devicePixelRatio or 1
 		{w, h} = @model
-		@$canvas.attr 'width', w*ratio + "px"
-		@$canvas.attr 'height', h*ratio + "px"
+		cDOM = @$canvas[0]
+
+		# width/height attributes determine the resolution
+		cDOM.width = w * ratio
+		cDOM.height = h * ratio
+
+		# style.width/style.height determine the actual pixel height of canvas dom element
+		cDOM.style.width = w + "px"
+		cDOM.style.height = h + "px"
+
+		# transofrm sets the new ratio to the ctx
+		cDOM.getContext("2d").setTransform ratio, 0, 0, ratio, 0, 0
 
 	mouseMove: (x,y) ->
 		for group in @groups
